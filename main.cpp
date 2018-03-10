@@ -6,7 +6,7 @@
 int main(int argc, const char * argv[]) {
     
 	// uncomment the following functions to start the corresponding test routines
-	//Test1::vector();
+	Test1::vector();
     //Test2::color();
     //Test3::rgbimage("");
     return 0;

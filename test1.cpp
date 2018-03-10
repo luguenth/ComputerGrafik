@@ -43,7 +43,7 @@ void Test1::vector()
     
     a+=b;
     TEST( "Vector operator+= failed!", equals( a, Vector(2,4,6)) );
-    
+    printf("Hallo :%s\n", b.str());
     a.normalize();
     b = b * (1.0f/b.length());
     TEST( "Vector normalize failed!", 1.0f-EPSILON <= a.length() && a.length() <= 1.0f+EPSILON );

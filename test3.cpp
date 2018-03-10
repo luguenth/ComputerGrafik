@@ -9,6 +9,7 @@
 #include "test3.h"
 #include <assert.h>
 #include <math.h>
+#include <cstring>
 #include "rgbimage.h"
 #include "color.h"
 

@@ -11,39 +11,49 @@ Vector::Vector( float x, float y, float z)
 
 Vector::Vector()
 {
-	// TODO: add your code
+
 }
 
+//Berechnet das Skalarprodukt
 float Vector::dot(const Vector& v) const
 {
-	// TODO: add your code
-	return 0.0f; // dummy (remove)
+	float  dot = this->Z * v.Z + this->Y * v.Y * this->X * v.X;
+	return dot;
 }
 
 Vector Vector::cross(const Vector& v) const
 {
-	// TODO: add your code
-	return Vector(); // dummy (remove)
+    float new_x = this->Y * v.Z - this->Z * v.Y;
+    float new_y = this->Z * v.X - this->X * v.Z;
+    float new_z = this->X * v.Y - this->Y * v.X;
+	return Vector(new_x, new_y, new_z); // dummy (remove)
 }
 
 
 
 Vector Vector::operator+(const Vector& v) const
 {
-	// TODO: add your code
-	return Vector(); // dummy (remove)
+	float new_x = this->X + v.X;
+    float new_y = this->Y + v.Y;
+    float new_z = this->Z + v.Z;
+	return Vector(new_x, new_y, new_z);
 }
 
 Vector Vector::operator-(const Vector& v) const
 {
-	// TODO: add your code
-	return Vector(); // dummy (remove)
+    float new_x = this->X - v.X;
+    float new_y = this->Y - v.Y;
+    float new_z = this->Z - v.Z;
+    return Vector(new_x, new_y, new_z);
 }
 
 Vector Vector::operator*(float c) const
 {
-	// TODO: add your code
-	return Vector(); // dummy (remove)
+    printf("%f\n",c);
+    float new_x = this->X * c;
+    float new_y = this->Y * c;
+    float new_z = this->Z * c;
+    return Vector(new_x, new_y, new_z);
 }
 
 Vector Vector::operator-() const
@@ -54,38 +64,62 @@ Vector Vector::operator-() const
 
 Vector& Vector::operator+=(const Vector& v)
 {
-	// TODO: add your code
-	return *this; // dummy (remove)
+	this->X += v.X;
+    this->Y += v.Y;
+    this->Z += v.Z;
+	return *this;
 }
 
 
 
 Vector& Vector::normalize()
 {
-	// TODO: add your code
-	return *this; // dummy (remove)
+    float l = length();
+	this->X = this->X / l;
+    this->Y = this->Y / l;
+    this->Z = this->Z / l;
+	return *this;
 }
 
+
+/*
+ * Uses lengthSquared and not otherwise because the length of a vector is the square root of it.
+ */
 float Vector::length() const
 {
-	// TODO: add your code
-	return 0.0f; // dummy (remove)
+    return sqrt(this->lengthSquared());
 }
 
 float Vector::lengthSquared() const
 {
-	// TODO: add your code
-	return 0.0f; // dummy (remove)
+	return (this->X * this->X + this->Y * this->Y + this->Z * this->Z);
 }
 
+/*
+ *  x' = x - n * D * 2
+ *
+ *  x   => Vector to reflect
+ *  x'  => reflected Vector
+ *  n   => normal Vector to reflect at
+ *  d   => x.dot(n)/n.length
+ */
 Vector Vector::reflection( const Vector& normal) const
 {
-	// TODO: add your code
-	return Vector(); // dummy (remove)
+	return *this - ((normal * (this->dot(normal)/normal.length())) * 2);
 }
 
+
+/*
+ * triangle         = a<->b<->c
+ * collision_vec    = d
+ * location_of_coll = s
+ */
 bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vector& b, const Vector& c, float& s) const
 {
 	// TODO: add your code
 	return false; // dummy (remove)
+}
+
+std::string Vector::str(){
+
 }

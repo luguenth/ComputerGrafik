@@ -9,6 +9,7 @@
 #include "test3.h"
 #include <assert.h>
 #include <math.h>
+#include <cstring>
 #include "rgbimage.h"
 #include "color.h"
 
@@ -32,12 +33,12 @@ void Test3::rgbimage( const char* Directory)
     
     TEST( "Invalid Image Width\n", Img1.width()==800);
     TEST( "Invalid Image Height\n", Img1.height()==600);
-    /*
-    Img1.setPixelColor( 800, 100, Color());
+
+    Img1.setPixelColor( 799, 100, Color());
     Color c = Img1.getPixelColor(800, 100);
     Img2.setPixelColor( 100, 600, Color());
     c = Img1.getPixelColor(100, 600);
-    */
+
     Color c0(0,0,0);
     Color c1(1,0,0);
     Color c2(0,1,0);

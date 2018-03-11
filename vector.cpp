@@ -58,7 +58,7 @@ Vector Vector::operator*(float c) const
 Vector Vector::operator-() const
 {
 	// TODO: add your code
-	return Vector(); // dummy (remove)
+	return *this*-1; // dummy (remove)
 }
 
 Vector& Vector::operator+=(const Vector& v)

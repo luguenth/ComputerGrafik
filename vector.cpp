@@ -122,23 +122,19 @@ bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vecto
     // Calc the normal of AC/AB
     Vector normal = ab.cross(ac);
 
-    //Check if parallel to triangle
-    if(normal.dot(d) && s > 0)
+    //Check if not parallel to triangle
+    if(normal.dot(d))
     {
         //Calc point
         Vector p = (*this)+(d*s);
 
-        Vector temp;
+        float abc = ab.length() * bc.length();
+        float abp = ab.length()*(p - a).length()/2;
+        float acp = ac.length()*(p - a).length()/2;
+        float bcp = bc.length()*(p - b).length()/2;
 
-        //if > 0 p is on the right side of Vector => not in triangle
-        temp = ab.cross(p - a);
-        if (normal.dot(temp) < 0) return false;
-        temp = bc.cross(p - b);
-        if (normal.dot(temp) < 0) return false;
-        temp = ca.cross(p - c);
-        if (normal.dot(temp) < 0) return false;
+        return abc + EPSILON >= (abp + acp + bcp);
 
-        return true;
     }
     else
     {

@@ -123,7 +123,7 @@ bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vecto
     Vector normal = ab.cross(ac);
 
     //Check if parallel to triangle
-    if(normal.dot(d) || s < 0)
+    if(normal.dot(d) && s > 0)
     {
         //Calc point
         Vector p = (*this)+(d*s);

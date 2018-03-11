@@ -26,7 +26,7 @@ Vector Vector::cross(const Vector& v) const
     float new_x = this->Y * v.Z - this->Z * v.Y;
     float new_y = this->Z * v.X - this->X * v.Z;
     float new_z = this->X * v.Y - this->Y * v.X;
-	return Vector(new_x, new_y, new_z); // dummy (remove)
+	return Vector(new_x, new_y, new_z);
 }
 
 
@@ -57,8 +57,7 @@ Vector Vector::operator*(float c) const
 
 Vector Vector::operator-() const
 {
-	// TODO: add your code
-	return *this*-1; // dummy (remove)
+	return *this*-1;
 }
 
 Vector& Vector::operator+=(const Vector& v)
@@ -115,12 +114,30 @@ Vector Vector::reflection( const Vector& normal) const
  */
 bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vector& b, const Vector& c, float& s) const
 {
-    Vector av = b - a;
-    Vector bv = c - b;
+    Vector ac = c - a; //Vector AC
+    Vector ab = b - a; //Vector AB
+    Vector bc = c - b; //Vector BC
+    Vector ca = a - c; //Vector CA
 
-    if(av.cross(bv).dot(d))
+    // Calc the normal of AC/AB
+    Vector normal = ab.cross(ac);
+
+    //Check if parallel to triangle
+    if(normal.dot(d) || s < 0)
     {
-        Vector g = (*this)+(d*s);
+        //Calc point
+        Vector p = (*this)+(d*s);
+
+        Vector temp;
+
+        //if > 0 p is on the right side of Vector => not in triangle
+        temp = ab.cross(p - a);
+        if (normal.dot(temp) < 0) return false;
+        temp = bc.cross(p - b);
+        if (normal.dot(temp) < 0) return false;
+        temp = ca.cross(p - c);
+        if (normal.dot(temp) < 0) return false;
+
         return true;
     }
     else

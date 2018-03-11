@@ -119,7 +119,7 @@ bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vecto
     Vector av = b - a;
     Vector bv = c - b;
 
-    if(av.cross(bv).dot(d) > 0)
+    if(av.cross(bv).dot(d) != 0)
     {
         Vector g = (*this)+(d*s);
         return true;

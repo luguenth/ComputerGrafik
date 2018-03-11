@@ -1,6 +1,7 @@
 #include "vector.h"
 #include <assert.h>
 #include <math.h>
+#include <sstream>
 
 Vector::Vector( float x, float y, float z)
 {
@@ -115,10 +116,14 @@ Vector Vector::reflection( const Vector& normal) const
  */
 bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vector& b, const Vector& c, float& s) const
 {
-	// TODO: add your code
-	return false; // dummy (remove)
+
+	return true; // dummy (remove)
 }
 
 std::string Vector::str(){
+    std::stringstream ss;
+
+    ss<<"X:"<<X<<"; Y:"<<Y<<"; Z:"<<Z<<"\n";
+    return ss.str();
 
 }

@@ -128,12 +128,12 @@ bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vecto
         //Calc point
         Vector p = (*this)+(d*s);
 
-        float abc = ab.length() * bc.length();
-        float abp = ab.length()*(p - a).length()/2;
-        float acp = ac.length()*(p - a).length()/2;
-        float bcp = bc.length()*(p - b).length()/2;
+        float abc = ab.cross(bc).length()/2;
+        float abp = ab.cross(p-a).length()/2;
+        float acp = ac.cross(p-a).length()/2;
+        float bcp = bc.cross(p-b).length()/2;
 
-        return abc + EPSILON >= (abp + acp + bcp);
+        return (abc + EPSILON) >= (abp + acp + bcp);
 
     }
     else

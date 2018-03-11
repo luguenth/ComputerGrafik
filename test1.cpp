@@ -31,7 +31,7 @@ void Test1::vector()
     a.X = 1;
     a.Y = 2;
     a.Z = 3;
-    
+
     TEST( "Vector initialization failed!", equals(a,b));
 
     TEST( "Vector lengthSquared failed!", (a.X*a.X + a.Y*a.Y + a.Z*a.Z)-EPSILON <= a.lengthSquared() && a.lengthSquared() <= (a.X*a.X + a.Y*a.Y + a.Z*a.Z)+EPSILON );
@@ -43,7 +43,6 @@ void Test1::vector()
     
     a+=b;
     TEST( "Vector operator+= failed!", equals( a, Vector(2,4,6)) );
-    printf("Hallo :%s\n", b.str());
     a.normalize();
     b = b * (1.0f/b.length());
     TEST( "Vector normalize failed!", 1.0f-EPSILON <= a.length() && a.length() <= 1.0f+EPSILON );

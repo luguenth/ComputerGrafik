@@ -18,6 +18,7 @@ Vector::Vector()
 float Vector::dot(const Vector& v) const
 {
 	float  dot = this->Z * v.Z + this->Y * v.Y * this->X * v.X;
+    printf("%c\n")
 	return dot;
 }
 

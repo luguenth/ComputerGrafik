@@ -11,16 +11,24 @@ RGBImage::RGBImage( unsigned int Width, unsigned int Height)
 
 RGBImage::~RGBImage()
 {
-	// TODO: add your code
+	free(this->m_Image);
 }
 
 void RGBImage::setPixelColor( unsigned int x, unsigned int y, const Color& c)
 {
+    if(x > this->width())
+        x = this->width()-1;
+    if(y > this->height())
+        y = this->height()-1;
     this->m_Image[x + width()*y]= c;
 }
 
 const Color& RGBImage::getPixelColor( unsigned int x, unsigned int y) const
 {
+    if(x > this->width())
+        x = this->width()-1;
+    if(y > this->height())
+        y = this->height()-1;
 	return this->m_Image[x + width()*y]; // dummy (remove)
 }
 
@@ -44,7 +52,7 @@ bool RGBImage::saveToDisk( const char* filename)
     unsigned int headers[13];
     FILE * outfile;
     int extrabytes;
-    int paddedsize;
+    unsigned int paddedsize;
     int x; int y; int n;
     int red, green, blue;
 
@@ -111,7 +119,9 @@ bool RGBImage::saveToDisk( const char* filename)
             if (red > 255) red = 255; if (red < 0) red = 0;
             if (green > 255) green = 255; if (green < 0) green = 0;
             if (blue > 255) blue = 255; if (blue < 0) blue = 0;
-
+            fprintf(outfile, "%c", blue);
+            fprintf(outfile, "%c", green);
+            fprintf(outfile, "%c", red);
         }
         if (extrabytes)      // See above - BMP lines must be of lengths divisible by 4.
         {

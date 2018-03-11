@@ -1,6 +1,7 @@
 #include "vector.h"
 #include <assert.h>
 #include <math.h>
+#include <sstream>
 
 Vector::Vector( float x, float y, float z)
 {
@@ -54,9 +55,9 @@ Vector Vector::operator*(float c) const
     return Vector(new_x, new_y, new_z);
 }
 
-
 Vector Vector::operator-() const
 {
+	// TODO: add your code
 	return *this*-1; // dummy (remove)
 }
 
@@ -114,14 +115,13 @@ Vector Vector::reflection( const Vector& normal) const
  */
 bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vector& b, const Vector& c, float& s) const
 {
-
     Vector av = b - a;
     Vector bv = c - b;
 
     if(av.cross(bv).dot(d))
     {
         Vector g = (*this)+(d*s);
-
+        return true;
     }
     else
     {
@@ -129,3 +129,10 @@ bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vecto
     }
 }
 
+std::string Vector::str(){
+    std::stringstream ss;
+
+    ss<<"X:"<<X<<"; Y:"<<Y<<"; Z:"<<Z<<"\n";
+    return ss.str();
+
+}

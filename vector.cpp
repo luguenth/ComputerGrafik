@@ -14,7 +14,6 @@ Vector::Vector()
 
 }
 
-//Berechnet das Skalarprodukt
 float Vector::dot(const Vector& v) const
 {
 	float  dot = this->Z * v.Z + this->Y * v.Y + this->X * v.X;
@@ -55,9 +54,9 @@ Vector Vector::operator*(float c) const
     return Vector(new_x, new_y, new_z);
 }
 
+
 Vector Vector::operator-() const
 {
-	// TODO: add your code
 	return *this*-1; // dummy (remove)
 }
 
@@ -110,15 +109,23 @@ Vector Vector::reflection( const Vector& normal) const
 
 /*
  * triangle         = a<->b<->c
- * direction_vec   = d
+ * direction_vec    = d
  * location_of_coll = s
  */
 bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vector& b, const Vector& c, float& s) const
 {
-	// TODO: add your code
-	return false; // dummy (remove)
+
+    Vector av = b - a;
+    Vector bv = c - b;
+
+    if(av.cross(bv).dot(d))
+    {
+        Vector g = (*this)+(d*s);
+
+    }
+    else
+    {
+        return false;
+    }
 }
 
-std::string Vector::str(){
-
-}

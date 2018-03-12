@@ -1,6 +1,5 @@
 #include "rgbimage.h"
 #include "color.h"
-#include "assert.h"
 
 RGBImage::RGBImage( unsigned int Width, unsigned int Height)
 {
@@ -11,16 +10,24 @@ RGBImage::RGBImage( unsigned int Width, unsigned int Height)
 
 RGBImage::~RGBImage()
 {
-	// TODO: add your code
+	free(this->m_Image);
 }
 
 void RGBImage::setPixelColor( unsigned int x, unsigned int y, const Color& c)
 {
+    if(x > this->width())
+        x = this->width()-1;
+    if(y > this->height())
+        y = this->height()-1;
     this->m_Image[x + width()*y]= c;
 }
 
 const Color& RGBImage::getPixelColor( unsigned int x, unsigned int y) const
 {
+    if(x > this->width())
+        x = this->width()-1;
+    if(y > this->height())
+        y = this->height()-1;
 	return this->m_Image[x + width()*y]; // dummy (remove)
 }
 
@@ -35,6 +42,12 @@ unsigned int RGBImage::height() const
 
 unsigned char RGBImage::convertColorChannel( float v)
 {
+    if(v<0){
+        v =0;
+    }
+    if(v>255){
+        v=255;
+    }
     return (unsigned char) (v * 256.0f);
 }
 
@@ -43,18 +56,11 @@ bool RGBImage::saveToDisk( const char* filename)
 {
     unsigned int headers[13];
     FILE * outfile;
-    int extrabytes;
-    int paddedsize;
+    unsigned int paddedsize;
     int x; int y; int n;
     int red, green, blue;
 
-    extrabytes = 4 - ((width() * 3) % 4);                 // How many bytes of padding to add to each
-    // horizontal line - the size of which must
-    // be a multiple of 4 bytes.
-    if (extrabytes == 4)
-        extrabytes = 0;
-
-    paddedsize = ((width() * 3) + extrabytes) * height();
+    paddedsize = (width() * 3) * height();
 
 
     headers[0]  = paddedsize + 54;      // bfSize (whole file size)
@@ -99,7 +105,7 @@ bool RGBImage::saveToDisk( const char* filename)
 // Headers done, now write the data...
 //
 
-    for (y = height() - 1; y >= 0; y--)     // BMP image format is written from bottom to top...
+    for (y = height() - 1; y >= 0; y--)
     {
         for (x = 0; x <= width() - 1; x++)
         {
@@ -108,17 +114,9 @@ bool RGBImage::saveToDisk( const char* filename)
             green = convertColorChannel(getPixelColor(x, y).G);
             blue = convertColorChannel(getPixelColor(x, y).B);
 
-            if (red > 255) red = 255; if (red < 0) red = 0;
-            if (green > 255) green = 255; if (green < 0) green = 0;
-            if (blue > 255) blue = 255; if (blue < 0) blue = 0;
-
-        }
-        if (extrabytes)      // See above - BMP lines must be of lengths divisible by 4.
-        {
-            for (n = 1; n <= extrabytes; n++)
-            {
-                fprintf(outfile, "%c", 0);
-            }
+            fprintf(outfile, "%c", blue);
+            fprintf(outfile, "%c", green);
+            fprintf(outfile, "%c", red);
         }
     }
 

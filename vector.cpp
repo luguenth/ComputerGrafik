@@ -1,6 +1,8 @@
 #include "vector.h"
 #include <assert.h>
 #include <math.h>
+#include <cmath>
+#include <sstream>
 
 Vector::Vector( float x, float y, float z)
 {
@@ -14,11 +16,9 @@ Vector::Vector()
 
 }
 
-//Berechnet das Skalarprodukt
 float Vector::dot(const Vector& v) const
 {
-	float  dot = this->Z * v.Z + this->Y * v.Y * this->X * v.X;
-	return dot;
+	return this->Z * v.Z + this->Y * v.Y + this->X * v.X;
 }
 
 Vector Vector::cross(const Vector& v) const
@@ -26,7 +26,7 @@ Vector Vector::cross(const Vector& v) const
     float new_x = this->Y * v.Z - this->Z * v.Y;
     float new_y = this->Z * v.X - this->X * v.Z;
     float new_z = this->X * v.Y - this->Y * v.X;
-	return Vector(new_x, new_y, new_z); // dummy (remove)
+	return Vector(new_x, new_y, new_z);
 }
 
 
@@ -49,7 +49,6 @@ Vector Vector::operator-(const Vector& v) const
 
 Vector Vector::operator*(float c) const
 {
-    printf("%f\n",c);
     float new_x = this->X * c;
     float new_y = this->Y * c;
     float new_z = this->Z * c;
@@ -58,8 +57,7 @@ Vector Vector::operator*(float c) const
 
 Vector Vector::operator-() const
 {
-	// TODO: add your code
-	return Vector(); // dummy (remove)
+	return *this*-1;
 }
 
 Vector& Vector::operator+=(const Vector& v)
@@ -87,7 +85,7 @@ Vector& Vector::normalize()
  */
 float Vector::length() const
 {
-    return sqrt(this->lengthSquared());
+    return (std::sqrt(this->lengthSquared()));
 }
 
 float Vector::lengthSquared() const
@@ -111,15 +109,33 @@ Vector Vector::reflection( const Vector& normal) const
 
 /*
  * triangle         = a<->b<->c
- * collision_vec    = d
+ * direction_vec    = d
  * location_of_coll = s
  */
 bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vector& b, const Vector& c, float& s) const
 {
-	// TODO: add your code
-	return false; // dummy (remove)
-}
+    Vector ac = c - a; //Vector AC
+    Vector ab = b - a; //Vector AB
+    Vector bc = c - b; //Vector BC
 
-std::string Vector::str(){
+    Vector normal = ab.cross(ac);
 
+    float distance = normal.dot(a);
+    s = (distance-normal.dot(*this))/normal.dot(d);
+    if(normal.dot(d) != 0 && s > 0)
+    {
+        Vector p = (*this)+(d*s);
+
+        float abc = ab.cross(bc).length()/2;
+        float abp = ab.cross(p-a).length()/2;
+        float acp = ac.cross(p-a).length()/2;
+        float bcp = bc.cross(p-b).length()/2;
+
+        return (abc + EPSILON) >= (abp + acp + bcp);
+
+    }
+    else
+    {
+        return false;
+    }
 }

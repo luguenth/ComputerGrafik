@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#define EPSILON 1e-6
+
 class Vector
 {
 public:
@@ -26,7 +28,6 @@ public:
     Vector reflection( const Vector& normal) const;
     bool triangleIntersection( const Vector& d, const Vector& a, const Vector& b,
                               const Vector& c, float& s) const;
-    std::string str();
  };
 
 #endif /* defined(__SimpleRayTracer__vector__) */

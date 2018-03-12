@@ -119,13 +119,12 @@ bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vecto
     Vector bc = c - b; //Vector BC
     Vector ca = a - c; //Vector CA
 
-    // Calc the normal of AC/AB
     Vector normal = ab.cross(ac);
 
-    //Check if not parallel to triangle
-    if(normal.dot(d))
+    float distance = normal.dot(a);
+    s = (distance-normal.dot(*this))/normal.dot(d);
+    if(normal.dot(d) != 0 && s > 0)
     {
-        //Calc point
         Vector p = (*this)+(d*s);
 
         float abc = ab.cross(bc).length()/2;
@@ -140,12 +139,4 @@ bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vecto
     {
         return false;
     }
-}
-
-std::string Vector::str(){
-    std::stringstream ss;
-
-    ss<<"X:"<<X<<"; Y:"<<Y<<"; Z:"<<Z<<"\n";
-    return ss.str();
-
 }

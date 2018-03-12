@@ -1,6 +1,7 @@
 #include "vector.h"
 #include <assert.h>
 #include <math.h>
+#include <cmath>
 #include <sstream>
 
 Vector::Vector( float x, float y, float z)
@@ -17,8 +18,7 @@ Vector::Vector()
 
 float Vector::dot(const Vector& v) const
 {
-	float  dot = this->Z * v.Z + this->Y * v.Y + this->X * v.X;
-	return dot;
+	return this->Z * v.Z + this->Y * v.Y + this->X * v.X;
 }
 
 Vector Vector::cross(const Vector& v) const
@@ -85,7 +85,7 @@ Vector& Vector::normalize()
  */
 float Vector::length() const
 {
-    return sqrt(this->lengthSquared());
+    return (std::sqrt(this->lengthSquared()));
 }
 
 float Vector::lengthSquared() const
@@ -117,7 +117,6 @@ bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vecto
     Vector ac = c - a; //Vector AC
     Vector ab = b - a; //Vector AB
     Vector bc = c - b; //Vector BC
-    Vector ca = a - c; //Vector CA
 
     Vector normal = ab.cross(ac);
 

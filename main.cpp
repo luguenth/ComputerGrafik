@@ -1,13 +1,15 @@
 #include <iostream>
-#include "test1.h"
-#include "test2.h"
-#include "test3.h"
+#include "CGUtilities.h"
+#include "rgbimage.h"
+#include "SimpleRayTracer.h"
+
 
 int main(int argc, const char * argv[]) {
-    
-//  uncomment the following functions to start the corresponding test routines
-	Test1::vector();
-    Test2::color();
-    Test3::rgbimage("");
+
+    Scene ModelScene(0);
+    RGBImage Image(640,480);
+    SimpleRayTracer Raytracer(2);
+    Raytracer.traceScene(ModelScene, Image);
+    Image.saveToDisk("raytracing_image.bmp");
     return 0;
 }

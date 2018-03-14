@@ -17,14 +17,13 @@ Camera::Camera(float planedist, float width, float height, float zvalue, unsigne
 Vector Camera::generateRay(unsigned int x, unsigned int y) {
     float scaleHeight = height/heightInPixel;
     float scaleWidth = width/widthInPixel;
-
-    return (Vector(
-                    x*scaleWidth,
-                    y*scaleHeight,
-                    zvalue-planedist
-            )
-            -position())
+    Vector temp = (Vector(
+            x*scaleWidth,
+            y*scaleHeight,
+            zvalue-planedist
+    ) -position())
             .normalize();
+    return temp;
 
 }
 

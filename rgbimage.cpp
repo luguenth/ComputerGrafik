@@ -72,7 +72,7 @@ bool RGBImage::saveToDisk( const char* filename)
 
 
 
-    paddedsize = (width() * 3) * height();
+    paddedsize = (width() * 4) * height();
 
 
     headers[0]  = paddedsize + 54;      // Dateigroesse
@@ -100,7 +100,7 @@ bool RGBImage::saveToDisk( const char* filename)
 
     fprintf(outfile, "%c", 1); //Ebene
     fprintf(outfile, "%c", 0); //Auf 2 Bytes aufstocken
-    fprintf(outfile, "%c", 24); //Bits per Pixel
+    fprintf(outfile, "%c", 32); //Bits per Pixel
     fprintf(outfile, "%c", 0); //Auf 2 Byte aufstocken
 
     for (n = 7; n <= 12; n++)
@@ -121,6 +121,7 @@ bool RGBImage::saveToDisk( const char* filename)
             fprintf(outfile, "%c", blue);
             fprintf(outfile, "%c", green);
             fprintf(outfile, "%c", red);
+            fprintf(outfile, "%c", 0);
         }
     }
 

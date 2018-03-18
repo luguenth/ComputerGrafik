@@ -7,7 +7,7 @@ class Color;
 
 class RGBImage
 {
-    
+
 public:
     RGBImage( unsigned int Width, unsigned Height);
     ~RGBImage();

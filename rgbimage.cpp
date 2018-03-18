@@ -57,16 +57,12 @@ bool RGBImage::saveToDisk( const char* filename)
     FILE * outfile;
     int red, green, blue;
     int x, y;
-    int bildgroesse;
-    outfile = fopen(filename, "wb");
-
     uint32_t i;
     uint16_t s;
 
-    bildgroesse = (width() * 3) * height();
 
 
-    unsigned int headers[13];
+    unsigned int header[11];
 
     unsigned int paddedsize;
 
@@ -75,19 +71,18 @@ bool RGBImage::saveToDisk( const char* filename)
     paddedsize = (width() * 4) * height();
 
 
-    headers[0]  = paddedsize + 54;      // Dateigroesse
-    headers[1]  = 0;                    // 4 Bytes auf Null gesetzt
-    headers[2]  = 54;                   // Pixeloffset
-    headers[3]  = 40;                   // Infoblockgroesse
-    headers[4]  = width();              // bildbreite
-    headers[5]  = height();             // bildhoehe
-    headers[7]  = 0;                    // Kompression unkompriemiert 0
-    headers[8]  = paddedsize;           // Bildgroesse
-    headers[9]  = 0;                    // Pixel per Meter X
-    headers[10] = 0;                    // Pixel per Meter Y
-    headers[11] = 0;                    // Farbtabelle
-    headers[12] = 0;                    // Wichtige Farben in der Farbtabelle
-
+    header[0]  = paddedsize + 54;      // Dateigroesse
+    header[1]  = 0;                    // 4 Bytes auf Null gesetzt
+    header[2]  = 54;                   // Pixeloffset
+    header[3]  = 40;                   // Infoblockgroesse
+    header[4]  = width();              // bildbreite
+    header[5]  = height();             // bildhoehe
+    header[6]  = 0;                    // Kompression unkompriemiert 0
+    header[7]  = paddedsize;           // Bildgroesse
+    header[8]  = 0;                    // Pixel per Meter X
+    header[9] = 0;                    // Pixel per Meter Y
+    header[10] = 0;                    // Farbtabelle
+    header[11] = 0;                    // Wichtige Farben in der Farbtabelle
 
     outfile = fopen(filename, "wb");
     fprintf(outfile, "BM"); // Header beginnt immer mit "BM"
@@ -95,7 +90,7 @@ bool RGBImage::saveToDisk( const char* filename)
 
     for (n = 0; n <= 5; n++)
     {
-        write_int_binary(headers[n],outfile);
+        write_int_binary(header[n],outfile);
     }
 
     fprintf(outfile, "%c", 1); //Ebene
@@ -103,9 +98,9 @@ bool RGBImage::saveToDisk( const char* filename)
     fprintf(outfile, "%c", 32); //Bits per Pixel
     fprintf(outfile, "%c", 0); //Auf 2 Byte aufstocken
 
-    for (n = 7; n <= 12; n++)
+    for (n = 6; n <= 11; n++)
     {
-        write_int_binary(headers[n],outfile);
+        write_int_binary(header[n],outfile);
     }
 
 

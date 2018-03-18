@@ -54,56 +54,60 @@ unsigned char RGBImage::convertColorChannel( float v)
 
 bool RGBImage::saveToDisk( const char* filename)
 {
-    unsigned int headers[13];
     FILE * outfile;
-    unsigned int paddedsize;
-    int x; int y; int n;
     int red, green, blue;
+    int x, y;
+    int bildgroesse;
+    outfile = fopen(filename, "wb");
+
+    uint32_t i;
+    uint16_t s;
+
+    bildgroesse = (width() * 3) * height();
+
+
+    unsigned int headers[13];
+
+    unsigned int paddedsize;
+
+
 
     paddedsize = (width() * 3) * height();
 
 
-    headers[0]  = paddedsize + 54;      // bfSize (whole file size)
-    headers[1]  = 0;                    // bfReserved (both)
-    headers[2]  = 54;                   // bfOffbits
-    headers[3]  = 40;                   // biSize
-    headers[4]  = width();              // biWidth
-    headers[5]  = height();             // biHeight
-    headers[7]  = 0;                    // biCompression
-    headers[8]  = paddedsize;           // biSizeImage
-    headers[9]  = 0;                    // biXPelsPerMeter
-    headers[10] = 0;                    // biYPelsPerMeter
-    headers[11] = 0;                    // biClrUsed
-    headers[12] = 0;                    // biClrImportant
+    headers[0]  = paddedsize + 54;      // Dateigroesse
+    headers[1]  = 0;                    // 4 Bytes auf Null gesetzt
+    headers[2]  = 54;                   // Pixeloffset
+    headers[3]  = 40;                   // Infoblockgroesse
+    headers[4]  = width();              // bildbreite
+    headers[5]  = height();             // bildhoehe
+    headers[7]  = 0;                    // Kompression unkompriemiert 0
+    headers[8]  = paddedsize;           // Bildgroesse
+    headers[9]  = 0;                    // Pixel per Meter X
+    headers[10] = 0;                    // Pixel per Meter Y
+    headers[11] = 0;                    // Farbtabelle
+    headers[12] = 0;                    // Wichtige Farben in der Farbtabelle
+
 
     outfile = fopen(filename, "wb");
-    fprintf(outfile, "BM");
+    fprintf(outfile, "BM"); // Header beginnt immer mit "BM"
+    int n;
 
     for (n = 0; n <= 5; n++)
     {
-        fprintf(outfile, "%c", headers[n] & 0x000000FF);
-        fprintf(outfile, "%c", (headers[n] & 0x0000FF00) >> 8);
-        fprintf(outfile, "%c", (headers[n] & 0x00FF0000) >> 16);
-        fprintf(outfile, "%c", (headers[n] & (unsigned int) 0xFF000000) >> 24);
+        write_int_binary(headers[n],outfile);
     }
 
-
-    fprintf(outfile, "%c", 1);
-    fprintf(outfile, "%c", 0);
-    fprintf(outfile, "%c", 24);
-    fprintf(outfile, "%c", 0);
+    fprintf(outfile, "%c", 1); //Ebene
+    fprintf(outfile, "%c", 0); //Auf 2 Bytes aufstocken
+    fprintf(outfile, "%c", 24); //Bits per Pixel
+    fprintf(outfile, "%c", 0); //Auf 2 Byte aufstocken
 
     for (n = 7; n <= 12; n++)
     {
-        fprintf(outfile, "%c", headers[n] & 0x000000FF);
-        fprintf(outfile, "%c", (headers[n] & 0x0000FF00) >> 8);
-        fprintf(outfile, "%c", (headers[n] & 0x00FF0000) >> 16);
-        fprintf(outfile, "%c", (headers[n] & (unsigned int) 0xFF000000) >> 24);
+        write_int_binary(headers[n],outfile);
     }
 
-//
-// Headers done, now write the data...
-//
 
     for (y = height() - 1; y >= 0; y--)
     {
@@ -123,3 +127,12 @@ bool RGBImage::saveToDisk( const char* filename)
     fclose(outfile);
 	return true; // dummy (remove)
 }
+
+void RGBImage::write_int_binary(int n, FILE *outfile) {
+
+    fprintf(outfile, "%c", n & 0x000000FF);
+    fprintf(outfile, "%c", (n & 0x0000FF00) >> 8);
+    fprintf(outfile, "%c", (n & 0x00FF0000) >> 16);
+    fprintf(outfile, "%c", (n & (unsigned int) 0xFF000000) >> 24);
+
+     }

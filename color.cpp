@@ -23,7 +23,7 @@ Color Color::operator*(const Color& c) const
 	float new_r = this->R * c.R;
     float new_g = this->G * c.G;
     float new_b = this->B * c.B;
-    return Color(new_r, new_g, new_b);
+    return {new_r, new_g, new_b};
 }
 
 Color Color::operator*(const float Factor) const
@@ -31,7 +31,7 @@ Color Color::operator*(const float Factor) const
     float new_r = this->R * Factor;
     float new_g = this->G * Factor;
     float new_b = this->B * Factor;
-    return Color(new_r, new_g, new_b);
+    return {new_r, new_g, new_b};
 }
 
 Color Color::operator+(const Color& c) const
@@ -39,7 +39,7 @@ Color Color::operator+(const Color& c) const
     float new_r = this->R + c.R;
     float new_g = this->G + c.G;
     float new_b = this->B + c.B;
-    return Color(new_r, new_g, new_b);
+    return {new_r, new_g, new_b};
 }
 
 Color& Color::operator+=(const Color& c)

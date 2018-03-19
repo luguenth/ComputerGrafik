@@ -11,10 +11,7 @@ Vector::Vector( float x, float y, float z)
     this->Z = z;
 }
 
-Vector::Vector()
-{
-
-}
+Vector::Vector() = default;
 
 float Vector::dot(const Vector& v) const
 {
@@ -26,7 +23,7 @@ Vector Vector::cross(const Vector& v) const
     float new_x = this->Y * v.Z - this->Z * v.Y;
     float new_y = this->Z * v.X - this->X * v.Z;
     float new_z = this->X * v.Y - this->Y * v.X;
-	return Vector(new_x, new_y, new_z);
+	return {new_x, new_y, new_z};
 }
 
 
@@ -36,7 +33,7 @@ Vector Vector::operator+(const Vector& v) const
 	float new_x = this->X + v.X;
     float new_y = this->Y + v.Y;
     float new_z = this->Z + v.Z;
-	return Vector(new_x, new_y, new_z);
+	return {new_x, new_y, new_z};
 }
 
 Vector Vector::operator-(const Vector& v) const
@@ -44,7 +41,7 @@ Vector Vector::operator-(const Vector& v) const
     float new_x = this->X - v.X;
     float new_y = this->Y - v.Y;
     float new_z = this->Z - v.Z;
-    return Vector(new_x, new_y, new_z);
+    return {new_x, new_y, new_z};
 }
 
 Vector Vector::operator*(float c) const
@@ -52,7 +49,7 @@ Vector Vector::operator*(float c) const
     float new_x = this->X * c;
     float new_y = this->Y * c;
     float new_z = this->Z * c;
-    return Vector(new_x, new_y, new_z);
+    return {new_x, new_y, new_z};
 }
 
 Vector Vector::operator-() const
@@ -126,7 +123,7 @@ bool Vector::triangleIntersection( const Vector& d, const Vector& a, const Vecto
     {
         Vector p = (*this)+(d*s);
 
-        float abc = ab.cross(bc).length()/2;
+        float abc = ab.cross(bc).length()*0.5;
         float abp = ab.cross(p-a).length()/2;
         float acp = ac.cross(p-a).length()/2;
         float bcp = bc.cross(p-b).length()/2;

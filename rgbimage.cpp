@@ -45,10 +45,10 @@ unsigned char RGBImage::convertColorChannel( float v)
     if(v<0){
         v =0;
     }
-    if(v>255){
-        v=255;
+    if(v>1){
+        v=1;
     }
-    return (unsigned char) (v * 256.0f);
+    return (unsigned char) (v * 255.0f);
 }
 
 
@@ -56,7 +56,7 @@ bool RGBImage::saveToDisk( const char* filename)
 {
     FILE * outfile;
     int red, green, blue;
-    int x, y;
+    unsigned int x, y;
     uint32_t i;
     uint16_t s;
 

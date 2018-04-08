@@ -60,7 +60,7 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
             Triangle angle_iter = SceneModel.getTriangle(i);
 
             if(intersect_point.triangleIntersection(between_pos_light, angle_iter.A, angle_iter.B, angle_iter.C, s)){
-                if(distance > s && s > 0.f)
+                if(s < distance && s > 0.f + 1e-2)
                     visible = false;
             }
 
@@ -90,8 +90,7 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
                   * temp_triangle.pMtrl->getReflectivity(intersect_point);
 
     //Maybe add transmission here
-    if(temp_color.R == 0, temp_color.G == 0, temp_color.B == 0)
-        temp_color = Color(255,255,255);
+    if(temp_color.R == 0, temp_color.G == 0, temp_color.B == 0){}
     return temp_color;
 }
 

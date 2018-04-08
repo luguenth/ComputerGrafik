@@ -6,7 +6,7 @@
 
 int main(int argc, const char * argv[]) {
 
-    Scene ModelScene(5);
+    Scene ModelScene(20);
     RGBImage Image(640,480);
     SimpleRayTracer Raytracer(2);
     Raytracer.traceScene(ModelScene, Image);

@@ -1,20 +1,21 @@
 //
-// Created by prof on 12.03.18.
+//  Camera.h
+//  Aufgabenblatt02
+//
+//  Created by  on 05.10.15.
+//  Copyright (c) 2015 a. All rights reserved.
 //
 
-#ifndef CG1_CAMERA_H
-#define CG1_CAMERA_H
 
+#ifndef __Prakt2__camera__
+#define __Prakt2__camera__
+
+#include <iostream>
 
 #include "Vector.h"
 
 class Camera
 {
-public:
-    Camera(float planedist, float width, float height, float zvalue, unsigned int widthInPixel, unsigned int heightInPixel);
-    Vector generateRay(unsigned int x, unsigned int y);
-    Vector position() const;
-
 private:
     float planedist;
     float width;
@@ -23,7 +24,15 @@ private:
     unsigned int widthInPixel;
     unsigned int heightInPixel;
 
+public:
+    Camera(float zvalue, float planedist, float width, float height,
+            unsigned int widthInPixel,
+           unsigned int heightInPixel);
+
+    Vector generateRay(unsigned int x, unsigned int y) const;
+    Vector position() const;
+
 };
 
 
-#endif //CG1_CAMERA_H
+#endif /* defined(__Prakt2__camera__) */

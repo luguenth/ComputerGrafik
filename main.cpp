@@ -1,6 +1,6 @@
 #include <iostream>
 #include "CGUtilities.h"
-#include "rgbimage.h"
+#include "RGBImage.h"
 #include "SimpleRayTracer.h"
 
 

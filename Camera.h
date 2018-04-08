@@ -6,7 +6,7 @@
 #define CG1_CAMERA_H
 
 
-#include "vector.h"
+#include "Vector.h"
 
 class Camera
 {

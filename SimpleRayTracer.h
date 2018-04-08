@@ -7,7 +7,7 @@
 
 
 #include "CGUtilities.h"
-#include "rgbimage.h"
+#include "RGBImage.h"
 
 class SimpleRayTracer {
 public:

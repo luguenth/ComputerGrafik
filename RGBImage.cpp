@@ -1,5 +1,5 @@
-#include "rgbimage.h"
-#include "color.h"
+#include "RGBImage.h"
+#include "Color.h"
 
 RGBImage::RGBImage( unsigned int Width, unsigned int Height)
 {

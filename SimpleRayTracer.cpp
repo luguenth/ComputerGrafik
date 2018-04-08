@@ -21,14 +21,13 @@ void SimpleRayTracer::traceScene(const Scene &SceneModel, RGBImage &Image) {
 }
 
 Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vector &d, int depth) {
-    if(depth<=0)														// Wenn die Rekursionstiefe zu groß ist,
-    {
-        return Color();													// gib die Farbe Schwarz zurück.
+    if(depth<=0) {
+        return Color();
     }
     float nearest_intersect = FLT_MAX;
     float s = FLT_MAX;
     Triangle temp_triangle;
-    Color temp_color;
+    Color temp_color = Color();
     Vector intersect_point;
     int temp_i = 0;
     for (int i = 0; i < SceneModel.getTriangleCount(); ++i){
@@ -37,13 +36,17 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
         if(o.triangleIntersection(d, temp_triangle.A, temp_triangle.B, temp_triangle.C, s)){
             if(s < nearest_intersect) {
                 nearest_intersect = s;
-                intersect_point = o + d * nearest_intersect;
+
                 temp_i = i;
             }
         }
     }
+    if(temp_i == -1)
+        return temp_color;
 
+    intersect_point = o + d * nearest_intersect;
     temp_triangle = SceneModel.getTriangle(temp_i);
+
     for (int l = 0; l < SceneModel.getLightCount() && (s != FLT_MAX); ++l) {
 
         bool visible = true;
@@ -70,18 +73,25 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
                     temp_triangle.calcNormal(intersect_point),
                     SceneModel.getLight(l),
                     *temp_triangle.pMtrl);
-            Vector reflection_vector = d.reflection(temp_triangle.calcNormal(intersect_point));
 
-            temp_color += trace(SceneModel,
-                                intersect_point,
-                                reflection_vector.normalize(),
-                                --depth)
-                          * temp_triangle.pMtrl->getReflectivity(intersect_point);
+
+
         }
     }
+    if(temp_triangle.pMtrl->getReflectivity(intersect_point) == 0){
+        return temp_color;
+    }
+    Vector reflection_vector = d.reflection(temp_triangle.calcNormal(intersect_point));
 
+    temp_color += trace(SceneModel,
+                        intersect_point,
+                        reflection_vector.normalize(),
+                        --depth)
+                  * temp_triangle.pMtrl->getReflectivity(intersect_point);
 
-
+    //Maybe add transmission here
+    if(temp_color.R == 0, temp_color.G == 0, temp_color.B == 0)
+        temp_color = Color(255,255,255);
     return temp_color;
 }
 

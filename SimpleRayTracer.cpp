@@ -11,7 +11,7 @@
 SimpleRayTracer::SimpleRayTracer(unsigned int m_MaxDepth):m_MaxDepth(m_MaxDepth) {}
 
 void SimpleRayTracer::traceScene(const Scene &SceneModel, RGBImage &Image) {
-    Camera c = Camera(-8, 1, 1, 0.75, 640, 480);
+    Camera c = Camera(-8, 1, 1, 0.75, 1920, 1080);
     for(unsigned int x = 0; x < Image.width(); ++x){
         for (unsigned int y = 0; y <  Image.height(); ++y) {
             Image.setPixelColor(x,y, Color());
@@ -21,7 +21,10 @@ void SimpleRayTracer::traceScene(const Scene &SceneModel, RGBImage &Image) {
 }
 
 Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vector &d, int depth) {
-
+    if(depth<=0)														// Wenn die Rekursionstiefe zu groß ist,
+    {
+        return Color();													// gib die Farbe Schwarz zurück.
+    }
     float nearest_intersect = FLT_MAX;
     float s;
     Triangle temp_triangle;
@@ -42,7 +45,25 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
 
     temp_triangle = SceneModel.getTriangle(temp_i);
     for (int l = 0; l < SceneModel.getLightCount(); ++l) {
-        if(true){
+
+        bool visible = true;
+        Vector light_position = SceneModel.getLight(l).Position;
+        Vector between_pos_light = light_position - intersect_point;
+        float distance = between_pos_light.length();
+        between_pos_light.normalize();
+
+        for (int i = 0; i < SceneModel.getTriangleCount(); ++i) {
+
+            Triangle angle_iter = SceneModel.getTriangle(i);
+
+            if(intersect_point.triangleIntersection(between_pos_light, angle_iter.A, angle_iter.B, angle_iter.C, s)){
+                if(distance > s)
+                    visible = false;
+            }
+            
+        }
+
+        if(visible){
             temp_color += localIllumination(
                     intersect_point,
                     o,
@@ -51,35 +72,34 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
                     *temp_triangle.pMtrl);
         }
     }
-//    for (int l = 0; l < SceneModel.getLightCount(); ++l) {
-//
-//        Vector light_ray = (intersect_point - SceneModel.getLight(l).Position).normalize(); // nrmVector between light source and triangle to render
-//        bool light_coll = true;
-//        for (int i = 0; i < SceneModel.getTriangleCount(); ++i){
-//
-//            temp_triangle = SceneModel.getTriangle(i);
-//            if(o.triangleIntersection(light_ray, temp_triangle.A, temp_triangle.B, temp_triangle.C, s)){
-//                if(s < nearest_intersect)
-//                    light_coll = false;
-//            }
-//        }
-//        if(light_coll) {
-//            Vector SceneLight = intersect_point - SceneModel.getLight(l).Position;
-//            Vector ab = temp_triangle.B - temp_triangle.A;
-//            Vector ac = temp_triangle.C - temp_triangle.A;
-//            Vector nrm = ab.cross(ac);
-//            temp_color += temp_triangle.pMtrl->getDiffuseCoeff(intersect_point) * SceneModel.getLight(l).Intensity *
-//                          cos(nrm.dot(SceneLight)/nrm.length()*SceneLight.length());
-//        } else {
-//            temp_color = Color();
-//        }
-//    }
+
+
+    if(temp_triangle.pMtrl->getReflectivity(intersect_point) == 0)
+    {
+        return temp_color;
+    }
+    Vector reflection_vector = d.reflection(temp_triangle.calcNormal(intersect_point));
+
+    temp_color += trace(SceneModel,
+                        intersect_point,
+                        reflection_vector.normalize(),
+                        --depth)
+                  * temp_triangle.pMtrl->getReflectivity(intersect_point);
 
     return temp_color;
 }
 
 Color SimpleRayTracer::localIllumination(const Vector &SurfacePoint, const Vector &Eye, const Vector &Normal,
                                          const PointLight &Light, const Material &Material) {
-    return Material.getDiffuseCoeff(SurfacePoint);
+    Vector L = Light.Position - SurfacePoint;
+
+    Color diffuseComp = Light.Intensity * Material.getDiffuseCoeff(SurfacePoint) * fmax(0, Normal.dot(L) / (Normal.length() * L.length()));
+
+    Vector E = Eye - SurfacePoint;
+    Vector R = (-L).reflection(Normal);
+
+    Color specularComp = Light.Intensity * Material.getSpecularCoeff(SurfacePoint) * powf(fmax(0, E.dot(R) / (E.length() * R.length())), Material.getSpecularExp(SurfacePoint));
+
+    return diffuseComp + specularComp;
 }
 

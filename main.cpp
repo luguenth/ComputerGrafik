@@ -6,8 +6,8 @@
 
 int main(int argc, const char * argv[]) {
 
-    Scene ModelScene(0);
-    RGBImage Image(1920,1080);
+    Scene ModelScene(5);
+    RGBImage Image(640,480);
     SimpleRayTracer Raytracer(2);
     Raytracer.traceScene(ModelScene, Image);
     Image.saveToDisk("raytracing_image.bmp");

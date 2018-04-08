@@ -11,7 +11,7 @@
 SimpleRayTracer::SimpleRayTracer(unsigned int m_MaxDepth):m_MaxDepth(m_MaxDepth) {}
 
 void SimpleRayTracer::traceScene(const Scene &SceneModel, RGBImage &Image) {
-    Camera c = Camera(-8, 1, 1, 0.75, 1920, 1080);
+    Camera c = Camera(-8, 1, 1, 0.75, 640, 480);
     for(unsigned int x = 0; x < Image.width(); ++x){
         for (unsigned int y = 0; y <  Image.height(); ++y) {
             Image.setPixelColor(x,y, Color());
@@ -26,7 +26,7 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
         return Color();													// gib die Farbe Schwarz zurück.
     }
     float nearest_intersect = FLT_MAX;
-    float s;
+    float s = FLT_MAX;
     Triangle temp_triangle;
     Color temp_color;
     Vector intersect_point;
@@ -44,7 +44,7 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
     }
 
     temp_triangle = SceneModel.getTriangle(temp_i);
-    for (int l = 0; l < SceneModel.getLightCount(); ++l) {
+    for (int l = 0; l < SceneModel.getLightCount() && (s != FLT_MAX); ++l) {
 
         bool visible = true;
         Vector light_position = SceneModel.getLight(l).Position;
@@ -52,15 +52,15 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
         float distance = between_pos_light.length();
         between_pos_light.normalize();
 
-        for (int i = 0; i < SceneModel.getTriangleCount(); ++i) {
+        for (int i = 0; i < SceneModel.getTriangleCount() && visible; ++i) {
 
             Triangle angle_iter = SceneModel.getTriangle(i);
 
             if(intersect_point.triangleIntersection(between_pos_light, angle_iter.A, angle_iter.B, angle_iter.C, s)){
-                if(distance > s)
+                if(distance > s && s > 0.f)
                     visible = false;
             }
-            
+
         }
 
         if(visible){
@@ -70,21 +70,17 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
                     temp_triangle.calcNormal(intersect_point),
                     SceneModel.getLight(l),
                     *temp_triangle.pMtrl);
+            Vector reflection_vector = d.reflection(temp_triangle.calcNormal(intersect_point));
+
+            temp_color += trace(SceneModel,
+                                intersect_point,
+                                reflection_vector.normalize(),
+                                --depth)
+                          * temp_triangle.pMtrl->getReflectivity(intersect_point);
         }
     }
 
 
-    if(temp_triangle.pMtrl->getReflectivity(intersect_point) == 0)
-    {
-        return temp_color;
-    }
-    Vector reflection_vector = d.reflection(temp_triangle.calcNormal(intersect_point));
-
-    temp_color += trace(SceneModel,
-                        intersect_point,
-                        reflection_vector.normalize(),
-                        --depth)
-                  * temp_triangle.pMtrl->getReflectivity(intersect_point);
 
     return temp_color;
 }

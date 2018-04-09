@@ -22,7 +22,7 @@ Camera::Camera(float zvalue, float planedist, float width, float height, unsigne
 
 Vector Camera::position() const
 {
-	return Vector(0, 0, this->zvalue);
+	return {0, 0, this->zvalue};
 };
 
 Vector Camera::generateRay(unsigned int x, unsigned int y) const
@@ -33,19 +33,15 @@ Vector Camera::generateRay(unsigned int x, unsigned int y) const
     float relation_x;
     float relation_y;
 
-    //Verhältnis von Höhe und Breite zu Höhe und Breite in Pixel -> wieviel float entspricht einem pixel
     relation_x = this->width/this->widthInPixel;
     relation_y = -this->height/this->heightInPixel;
 
-	//relative -> umrechnung von übergebenem x (pixel) in floatwert
     relative_x = relation_x*x;
     relative_y = relation_y*y;
 
-	//Übertragung in den R2 ; Pixelwerte von 0 bis 100, auf Floatwerte von -50 bis +50 abbilden
     relative_x -= (this->width / 2);
     relative_y += (this->height / 2);
 
-    //ray zeigt vom Blickpunkt auf den pixel
     Vector ray = Vector(relative_x, relative_y, (this->zvalue+this->planedist) );
     Vector result = (ray - this->position()).normalize();
 

@@ -105,6 +105,7 @@ Color SimpleRayTracer::localIllumination(const Vector &SurfacePoint, const Vecto
 
     Color specularComp = Light.Intensity * Material.getSpecularCoeff(SurfacePoint) * powf(fmax(0, E.dot(R) / (E.length() * R.length())), Material.getSpecularExp(SurfacePoint));
 
-    return diffuseComp + specularComp;
+    Color ambientComp = Material.getAmbientCoeff(SurfacePoint);
+    return diffuseComp + specularComp + ambientComp;
 }
 

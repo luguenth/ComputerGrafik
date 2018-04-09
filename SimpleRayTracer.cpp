@@ -22,15 +22,15 @@ void SimpleRayTracer::traceScene(const Scene &SceneModel, RGBImage &Image) {
 
 Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vector &d, int depth) {
     if(depth<=0) {
-        return Color();
+        return {};
     }
     float nearest_intersect = FLT_MAX;
     float s = FLT_MAX;
     Triangle temp_triangle;
     Color temp_color = Color();
     Vector intersect_point;
-    int temp_i = 0;
-    for (int i = 0; i < SceneModel.getTriangleCount(); ++i){
+    unsigned int temp_i = 0;
+    for (unsigned int i = 0; i < SceneModel.getTriangleCount(); ++i){
 
         temp_triangle = SceneModel.getTriangle(i);
         if(o.triangleIntersection(d, temp_triangle.A, temp_triangle.B, temp_triangle.C, s)){
@@ -47,7 +47,7 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
     intersect_point = o + d * nearest_intersect;
     temp_triangle = SceneModel.getTriangle(temp_i);
 
-    for (int l = 0; l < SceneModel.getLightCount() && (s != FLT_MAX); ++l) {
+    for (unsigned int l = 0; l < SceneModel.getLightCount() && (s != FLT_MAX); ++l) {
 
         bool visible = true;
         Vector light_position = SceneModel.getLight(l).Position;
@@ -55,7 +55,7 @@ Color SimpleRayTracer::trace(const Scene &SceneModel, const Vector &o, const Vec
         float distance = between_pos_light.length();
         between_pos_light.normalize();
 
-        for (int i = 0; i < SceneModel.getTriangleCount() && visible; ++i) {
+        for (unsigned int i = 0; i < SceneModel.getTriangleCount() && visible; ++i) {
 
             Triangle angle_iter = SceneModel.getTriangle(i);
 
@@ -106,6 +106,7 @@ Color SimpleRayTracer::localIllumination(const Vector &SurfacePoint, const Vecto
     Color specularComp = Light.Intensity * Material.getSpecularCoeff(SurfacePoint) * powf(fmax(0, E.dot(R) / (E.length() * R.length())), Material.getSpecularExp(SurfacePoint));
 
     Color ambientComp = Material.getAmbientCoeff(SurfacePoint);
-    return diffuseComp + specularComp + ambientComp;
+
+    return diffuseComp + specularComp;
 }
 

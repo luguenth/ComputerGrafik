@@ -37,7 +37,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
     PhongShader* pPhongShader;
     
     // create LineGrid model with constant color shader
-    pModel = new LinePlaneModel(10, 10, 10, 10);
+    pModel = new LinePlaneModel(1, 1, 1, 1);
     pConstShader = new ConstantShader();
 	pConstShader->color( Color(1,1,1));
     pModel->shader(pConstShader, true);
@@ -45,6 +45,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
     Models.push_back( pModel );
     
     // create TrianglePlaneModel with phong shader and texture
+	/*
     pModel = new TrianglePlaneModel(4, 4, 10, 10);
     pPhongShader = new PhongShader();
 	pPhongShader->ambientColor(Color(0.2f,0.2f,0.2f));
@@ -60,15 +61,15 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
     trans.translation(0, 1.0f, 0);
     pModel->transform(trans);
     Models.push_back( pModel );
-    
+    */
     // Exercise 1: LineBoxModel
-    /*
+    
     pModel = new LineBoxModel(2,3,4);
     pConstShader = new ConstantShader();
     pConstShader->color(Color(0,1,0));
     pModel->shader(pConstShader, true);
     Models.push_back(pModel);
-    */
+    
     
     // Exercise 2: TriangleBoxModel
     /*

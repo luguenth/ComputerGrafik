@@ -11,13 +11,13 @@
 TriangleBoxModel::TriangleBoxModel(float Width, float Height, float Depth)
 {
 	VB.begin();
-	
+	VB.addTexcoord0(0,0);					// 0. a
 	VB.addNormal(0, 0, 0);					// 0. a
 	VB.addVertex(0, 0, 0);					// 0. a
 	VB.addTexcoord0(Width,0);				// 1. b	
 	VB.addNormal(Width, 0, 0);				// 1. b	
 	VB.addVertex(Width, 0, 0);				// 1. b	
-	VB.addTexcoord0(,0);				// 2. c
+	VB.addTexcoord0(0,0);				// 2. c
 	VB.addNormal(0, 0, Depth);				// 2. c
 	VB.addVertex(0, 0, Depth);				// 2. c
 	VB.addTexcoord0(Width,0);			// 3. d

@@ -63,16 +63,16 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
     Models.push_back( pModel );
     */
     // Exercise 1: LineBoxModel
-    
+    /*
     pModel = new LineBoxModel(2,3,4);
     pConstShader = new ConstantShader();
     pConstShader->color(Color(0,1,0));
     pModel->shader(pConstShader, true);
     Models.push_back(pModel);
-    
+    */
     
     // Exercise 2: TriangleBoxModel
-    /*
+    
     pModel = new TriangleBoxModel(4,4,4);
     pPhongShader = new PhongShader();
     pPhongShader->ambientColor(Color(0.2f,0.2f,0.2f));
@@ -81,7 +81,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "smiley.png"));
     pModel->shader(pPhongShader, true);
     Models.push_back( pModel );
-    */
+    
     
     // Exercise 3: Model
     /*

@@ -8,93 +8,84 @@
 
 #include "TriangleBoxModel.h"
 
+
 TriangleBoxModel::TriangleBoxModel(float Width, float Height, float Depth)
 {
 	VB.begin();
-	VB.addTexcoord0(0,0);					// 0. a
-	VB.addNormal(0, 0, 0);					// 0. a
-	VB.addVertex(0, 0, 0);					// 0. a
-	VB.addTexcoord0(Width,0);				// 1. b	
-	VB.addNormal(Width, 0, 0);				// 1. b	
-	VB.addVertex(Width, 0, 0);				// 1. b	
-	VB.addTexcoord0(0,0);				// 2. c
-	VB.addNormal(0, 0, Depth);				// 2. c
-	VB.addVertex(0, 0, Depth);				// 2. c
-	VB.addTexcoord0(Width,0);			// 3. d
-	VB.addNormal(Width, 0, Depth);			// 3. d
-	VB.addVertex(Width, 0, Depth);			// 3. d
-	VB.addTexcoord0(0, Height);			// 4. e	
-	VB.addNormal(0, Height, 0);				// 4. e	
-	VB.addVertex(0, Height, 0);				// 4. e	
-	VB.addTexcoord0(Width, Height);			// 5. f
-	VB.addNormal(Width, Height, 0);			// 5. f
-	VB.addVertex(Width, Height, 0);			// 5. f
-	VB.addTexcoord0(0,Height);			// 6. g
-	VB.addNormal(0, Height, Depth);			// 6. g
-	VB.addVertex(0, Height, Depth);			// 6. g
-	VB.addTexcoord0(Width, Height);     // 7. h
-	VB.addNormal(Width, Height, Depth);     // 7. h
-	VB.addVertex(Width, Height, Depth);     // 7. h
+	addVertexWithProps(0, 0, 0, 0, 1);				// a0 x O
+	addVertexWithProps(0, 0, 0, 1, 1);				// a1 x ~
+	addVertexWithProps(0, 0, 0, 0, 0);				// a2 x
+
+	addVertexWithProps(Width, 0, 0, 1, 1);			// b3 x O
+	addVertexWithProps(Width, 0, 0, 0, 1);			// b4 x V
+	addVertexWithProps(Width, 0, 0, 1, 0);			// b5 x
+
+	addVertexWithProps(0, 0, Depth, 0, 1);			// c6 x ~
+	addVertexWithProps(0, 0, Depth, 1, 1);			// c7 x Ö
+	addVertexWithProps(0, 0, Depth, 0, 1);			// c8 x
+
+	addVertexWithProps(Width, 0, Depth, 1, 1);		// d9 x V
+	addVertexWithProps(Width, 0, Depth, 0, 1);		// d10 x Ö
+	addVertexWithProps(Width, 0, Depth, 1, 1);		// d11 x
+
+	addVertexWithProps(0, Height, 0, 0, 0);			// e12 x O
+	addVertexWithProps(0, Height, 0, 1, 0);			// e13 x ~
+	addVertexWithProps(0, Height, 0, 0, 1);			// e14 x ?
+
+	addVertexWithProps(Width, Height, 0, 1, 0);		// f15 x O
+	addVertexWithProps(Width, Height, 0, 0, 0);		// f16 x V
+	addVertexWithProps(Width, Height, 0, 1, 1);		// f17 x ?
+
+	addVertexWithProps(0, Height, Depth, 0, 0);		// g18 x ~
+	addVertexWithProps(0, Height, Depth, 1, 0);		// g19 x Ö
+	addVertexWithProps(0, Height, Depth, 0, 0);		// g20 x ?
+
+	addVertexWithProps(Width, Height, Depth, 1, 0);	// h21 x V
+	addVertexWithProps(Width, Height, Depth, 0, 0);	// h22 x Ö
+	addVertexWithProps(Width, Height, Depth, 1, 0);	// h23 x ?
 	
 
 	VB.end();
 
 	IB.begin();
 	
-	//Vorderseite
-	IB.addIndex(0);
-	IB.addIndex(5);
-	IB.addIndex(1);
-
-	IB.addIndex(0);
-	IB.addIndex(4);
-	IB.addIndex(5);
+	//Vorderseite 0, 15, 3, 12
+	IBaddPolygon(0, 15, 3);
+	IBaddPolygon(0, 12, 15);
 
 	//Rechte Seite
-	IB.addIndex(0);
-	IB.addIndex(2);
-	IB.addIndex(6);
-
-	IB.addIndex(0);
-	IB.addIndex(6);
-	IB.addIndex(4);
+	IBaddPolygon(1, 6, 18);
+	IBaddPolygon(1, 18, 13);
 
 	//Linke Seite
-	IB.addIndex(1);
-	IB.addIndex(7);
-	IB.addIndex(3);
+	IBaddPolygon(4, 21, 9);
+	IBaddPolygon(4, 16, 21);
 
-	IB.addIndex(1);
-	IB.addIndex(5);
-	IB.addIndex(7);
-	
-	//Hinterseite
-	IB.addIndex(3);
-	IB.addIndex(7);
-	IB.addIndex(6);
-
-	IB.addIndex(3);
-	IB.addIndex(6);
-	IB.addIndex(2);
+	//Rückseite
+	IBaddPolygon(10, 22, 19);
+	IBaddPolygon(10, 19, 7);
 
 	//Oben
-	IB.addIndex(5);
-	IB.addIndex(4);
-	IB.addIndex(7);
-
-	IB.addIndex(7);
-	IB.addIndex(4);
-	IB.addIndex(6);
+	IBaddPolygon(17, 14, 23);
+	IBaddPolygon(23, 14, 20);
 
 	//Unten
-	IB.addIndex(1);
-	IB.addIndex(3);
-	IB.addIndex(0);
+	IBaddPolygon(5, 11, 2);
+	IBaddPolygon(11, 8, 2);
 
-	IB.addIndex(3);
-	IB.addIndex(2);
-	IB.addIndex(0);
 	IB.end();
+}
+
+void TriangleBoxModel::IBaddPolygon(int a, int b, int c) {
+	IB.addIndex(a);
+	IB.addIndex(b);
+	IB.addIndex(c);
+}
+
+void TriangleBoxModel::addVertexWithProps(float x, float y, float z, float tx, float ty) {
+	VB.addTexcoord0(tx, ty);					// 0. a
+	VB.addNormal(x, y, z);					// 0. a
+	VB.addVertex(x, y, z);					// 0. a
 }
 
 void TriangleBoxModel::draw(const BaseCamera& Cam)

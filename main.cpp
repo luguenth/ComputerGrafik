@@ -10,10 +10,27 @@
 #include "Application.h"
 #include "freeimage.h"
 
+
+#include <direct.h>
+#define GetCurrentDir _getcwd
+
 void PrintOpenGLVersion();
 
 
 int main () {
+
+	char cCurrentPath[FILENAME_MAX];
+
+	if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
+	{
+		return errno;
+	}
+
+	cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
+
+	printf("The current working directory is %s\n", cCurrentPath);
+
+
     FreeImage_Initialise();
     // start GL context and O/S window using the GLFW helper library
     if (!glfwInit ()) {

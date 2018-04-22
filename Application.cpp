@@ -72,7 +72,8 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
     */
     
     // Exercise 2: TriangleBoxModel
-    
+    /*
+	
     pModel = new TriangleBoxModel(4,4,4);
     pPhongShader = new PhongShader();
     pPhongShader->ambientColor(Color(0.2f,0.2f,0.2f));
@@ -81,16 +82,16 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "smiley.png"));
     pModel->shader(pPhongShader, true);
     Models.push_back( pModel );
-    
+    */
     
     // Exercise 3: Model
-    /*
-    pModel = new Model(ASSET_DIRECTORY "lizard.dae");
+    
+    pModel = new Model(ASSET_DIRECTORY "bunny.dae");
     pPhongShader = new PhongShader();
     pModel->shader(pPhongShader, true);
     // add to render list
     Models.push_back( pModel );
-    */
+    
     
 }
 void Application::start()

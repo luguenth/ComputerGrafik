@@ -62,44 +62,56 @@ bool Model::load(const char* ModelFile, bool FitSize)
 
 void Model::loadMeshes(const aiScene* pScene, bool FitSize)
 {
-
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	//  if (pScene->HasMeshes && pScene->HasTextures) {
+	float fs_size = 5;
+	AABB bb(0, 0, 0, 0, 0, 0);
+	AABB fs(-fs_size/2, -fs_size/2, -fs_size/2, fs_size/2, fs_size/2, fs_size/2);
+	calcBoundingBox(pScene, bb);
+	float factor = 1.0;
+	if (FitSize)
+		factor = fs.size().length() / bb.size().length();
 	pMeshes = new Mesh[pScene->mNumMeshes];
 	for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
-
+		MeshCount++;
 			pMeshes[i].IB.begin();
 			pMeshes[i].VB.begin();
 			unsigned int vertice_counter = 0;
+
+
+
 			for (unsigned int k = 0; k < pScene->mMeshes[i]->mNumFaces; ++k) {
-				
+
 					for (unsigned int l = 0; l < pScene->mMeshes[i]->mFaces[k].mNumIndices; ++l) {
 
 						unsigned int vertex_index = pScene->mMeshes[i]->mFaces[k].mIndices[l];
-						aiVector3D bla = pScene->mMeshes[i]->mVertices[vertex_index];
-
 						
-						pMeshes[i].VB.addNormal(
-						pScene->mMeshes[i]->mNormals[vertex_index].x,
-						pScene->mMeshes[i]->mNormals[vertex_index].y,
-						pScene->mMeshes[i]->mNormals[vertex_index].z
-						);
-						/*
-						pMeshes[i].VB.addNormal(
-							pScene->mMeshes[i]->mVertices[vertex_index].x,
-							pScene->mMeshes[i]->mVertices[vertex_index].y,
-							pScene->mMeshes[i]->mVertices[vertex_index].z
-						);
-						*/
-						//pMeshes[i].MaterialIdx = pScene->mMeshes[i]->mMaterialIndex;
+						if (pScene->mMeshes[i]->HasTextureCoords(i))
+							pMeshes[i].VB.addTexcoord0(
+								pScene->mMeshes[i]->mTextureCoords[0][vertex_index].x,
+								pScene->mMeshes[i]->mTextureCoords[0][vertex_index].y
+							);
 
-						pMeshes[i].VB.addColor(Color(0, 255, 0));
+						if(pScene->mMeshes[i]->HasNormals())
+							pMeshes[i].VB.addNormal(
+								pScene->mMeshes[i]->mNormals[vertex_index].x*factor,
+								pScene->mMeshes[i]->mNormals[vertex_index].y*factor,
+								pScene->mMeshes[i]->mNormals[vertex_index].z*factor
+							);
+
+						pMeshes[i].MaterialIdx = pScene->mMeshes[i]->mMaterialIndex;
+
+						if(pScene->mMeshes[i]->HasVertexColors(i))
+							pMeshes[i].VB.addColor(
+								Color(
+									pScene->mMeshes[i]->mColors[vertex_index]->r,
+									pScene->mMeshes[i]->mColors[vertex_index]->g,
+									pScene->mMeshes[i]->mColors[vertex_index]->b
+								)
+							);
 
 						pMeshes[i].VB.addVertex(
-							pScene->mMeshes[i]->mVertices[vertex_index].x,
-							pScene->mMeshes[i]->mVertices[vertex_index].y,
-							pScene->mMeshes[i]->mVertices[vertex_index].z
+							pScene->mMeshes[i]->mVertices[vertex_index].x*factor,
+							pScene->mMeshes[i]->mVertices[vertex_index].y*factor,
+							pScene->mMeshes[i]->mVertices[vertex_index].z*factor
 
 						);
 						pMeshes[i].IB.addIndex(vertice_counter++);
@@ -107,48 +119,80 @@ void Model::loadMeshes(const aiScene* pScene, bool FitSize)
 					}
 				
 			}
-			/*
-			pMeshes[i].VB.addNormal(
-				pScene->mMeshes[i]->mVertices[j].x,
-				pScene->mMeshes[i]->mVertices[j].y,
-				pScene->mMeshes[i]->mVertices[j].z
-			);
-			pMeshes[i].MaterialIdx = pScene->mMeshes[i]->mMaterialIndex;
-			
-			pMeshes[i].VB.addColor(Color(0, 255, 0));
-			
-			pMeshes[i].VB.addVertex(
-				pScene->mMeshes[i]->mVertices[j].x,
-				pScene->mMeshes[i]->mVertices[j].y,
-				pScene->mMeshes[i]->mVertices[j].z
-			);
-			
-			pMeshes[i].IB.addIndex(j);
-			*/
-		
+
 
 			pMeshes[i].IB.end();
 			pMeshes[i].VB.end();
 	}
-	//  }
+	
 	pMeshes->VB.end();
 	pMeshes->IB.end();
-	calcBoundingBox(pScene, AABB());
+
 }
 void Model::loadMaterials(const aiScene* pScene)
 {
-	/*
-	if (pScene->HasMaterials) {
-		pMaterials = new Material[pScene->mNumMaterials];
-		for (unsigned int i = 0; i < pScene->mNumMaterials; ++i) {
-			pMaterials[i]. = pScene->mMaterials[i]->GetTexture;
+	
+	pMaterials = new Material[pScene->mNumMaterials];
+	MaterialCount = pScene->mNumMaterials;
+	for (unsigned int i = 0; i < MeshCount; i++)
+	{
+		unsigned int mtr_idx = pMeshes[i].MaterialIdx;
+		for (unsigned int j = 0; j < pScene->mMaterials[mtr_idx]->mNumProperties; j++)
+		{
+			aiString tex_path;
+			aiColor4D ai_color;
+			//aiGetMaterialString(pScene->mMaterials[mtr_idx], AI_MATKEY_NAME, &tex_path);
+
+			aiGetMaterialTexture(pScene->mMaterials[mtr_idx], aiTextureType_DIFFUSE, 0, &tex_path);
+			std::string s ="../../assets/";
+			s+= tex_path.C_Str();
+			pMaterials[mtr_idx].DiffTex = Texture::LoadShared(s.c_str());
+
+			aiGetMaterialColor(pScene->mMaterials[mtr_idx], AI_MATKEY_COLOR_DIFFUSE, &ai_color);
+			pMaterials[mtr_idx].DiffColor.B = ai_color.b;
+			pMaterials[mtr_idx].DiffColor.G = ai_color.g;
+			pMaterials[mtr_idx].DiffColor.R = ai_color.r;
+
+			aiGetMaterialColor(pScene->mMaterials[mtr_idx], AI_MATKEY_COLOR_SPECULAR, &ai_color);
+			pMaterials[mtr_idx].SpecColor.B = ai_color.b;
+			pMaterials[mtr_idx].SpecColor.G = ai_color.g;
+			pMaterials[mtr_idx].SpecColor.R = ai_color.r;
+
+			aiGetMaterialColor(pScene->mMaterials[mtr_idx], AI_MATKEY_COLOR_AMBIENT, &ai_color);
+			pMaterials[mtr_idx].AmbColor.B = ai_color.b;
+			pMaterials[mtr_idx].AmbColor.G = ai_color.g;
+			pMaterials[mtr_idx].AmbColor.R = ai_color.r;
+
+			
 		}
+		
 	}
-	*/
+
 }
 void Model::calcBoundingBox(const aiScene* pScene, AABB& Box)
 {
-	// TODO: Add your code (Exercise 3)
+	float minX = 0, minY = 0, minZ = 0, maxX = 0, maxY = 0, maxZ = 0;
+	for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
+		for (unsigned int j = 0; j < pScene->mMeshes[i]->mNumVertices; j++)
+		{
+			float tx = pScene->mMeshes[i]->mVertices[j].x;
+			float ty = pScene->mMeshes[i]->mVertices[j].y;
+			float tz = pScene->mMeshes[i]->mVertices[j].z;
+			
+			defineExtremes(tx, maxX, minX);
+			defineExtremes(ty, maxY, minY);
+			defineExtremes(tz, maxZ, minZ);
+
+		}
+	}
+	Box = *new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+}
+
+void Model::defineExtremes(float point, float &max, float &min) {
+	if (point < min + EPSILON)
+		min = point;
+	else if (point > max - EPSILON)
+		max = point;
 }
 
 void Model::loadNodes(const aiScene* pScene)

@@ -37,7 +37,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
     PhongShader* pPhongShader;
     
     // create LineGrid model with constant color shader
-    pModel = new LinePlaneModel(1, 1, 1, 1);
+    pModel = new LinePlaneModel(10, 10, 10, 10);
     pConstShader = new ConstantShader();
 	pConstShader->color( Color(1,1,1));
     pModel->shader(pConstShader, true);
@@ -72,7 +72,7 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
     */
     
     // Exercise 2: TriangleBoxModel
-    /*
+    
 	
     pModel = new TriangleBoxModel(4,4,4);
     pPhongShader = new PhongShader();
@@ -82,16 +82,16 @@ Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
     pPhongShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "smiley.png"));
     pModel->shader(pPhongShader, true);
     Models.push_back( pModel );
-    */
+   
     
     // Exercise 3: Model
-    
-    pModel = new Model(ASSET_DIRECTORY "bunny.dae");
+    /*
+    pModel = new Model(ASSET_DIRECTORY "lizard.dae");
     pPhongShader = new PhongShader();
     pModel->shader(pPhongShader, true);
     // add to render list
     Models.push_back( pModel );
-    
+     */
     
 }
 void Application::start()

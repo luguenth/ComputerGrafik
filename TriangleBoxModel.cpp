@@ -83,9 +83,10 @@ void TriangleBoxModel::IBaddPolygon(int a, int b, int c) {
 }
 
 void TriangleBoxModel::addVertexWithProps(float x, float y, float z, float tx, float ty) {
-	VB.addTexcoord0(tx, ty);					// 0. a
-	VB.addNormal(x, y, z);					// 0. a
-	VB.addVertex(x, y, z);					// 0. a
+	VB.addTexcoord0(tx, ty);
+	Vector norm = Vector(x, y, z).normalize();
+	VB.addNormal(norm.X, norm.Y, norm.Z);					
+	VB.addVertex(x, y, z);				
 }
 
 void TriangleBoxModel::draw(const BaseCamera& Cam)

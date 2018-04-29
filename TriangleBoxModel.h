@@ -22,9 +22,14 @@ public:
     TriangleBoxModel(float Width=1, float Height=1, float Depth=1 );
     virtual ~TriangleBoxModel() {}
     virtual void draw(const BaseCamera& Cam);
+	
 protected:
     VertexBuffer VB;
     IndexBuffer IB;
+
+private:
+	void addVertexWithProps(float x, float y, float z, float tx, float ty);
+	void IBaddPolygon(int a, int b, int c);
 };
 
 

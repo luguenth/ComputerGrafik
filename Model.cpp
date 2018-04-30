@@ -40,7 +40,7 @@ void Model::deleteNodes(Node* pNode)
 
 bool Model::load(const char* ModelFile, bool FitSize)
 {
-	const aiScene* pScene = aiImportFile(ModelFile, aiProcessPreset_TargetRealtime_Fast | aiProcess_TransformUVCoords);
+	const aiScene* pScene = aiImportFile(ModelFile, aiProcessPreset_TargetRealtime_Fast | aiProcess_FlipUVs | aiProcess_TransformUVCoords);
 
 	if (pScene == NULL || pScene->mNumMeshes <= 0)
 		return false;
@@ -69,64 +69,48 @@ void Model::loadMeshes(const aiScene* pScene, bool FitSize)
 	float factor = 1.0;
 	if (FitSize)
 		factor = fs.size().length() / bb.size().length();
-	pMeshes = new Mesh[pScene->mNumMeshes];
-	for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
-		MeshCount++;
-			pMeshes[i].IB.begin();
-			pMeshes[i].VB.begin();
-			unsigned int vertice_counter = 0;
+	this->MeshCount = pScene->mNumMeshes;
+	this->pMeshes = new Mesh[this->MeshCount];
+	float x, y, z;
 
+	for (int i = 0; i < this->MeshCount; i++) {
+		Mesh& eachMesh = this->pMeshes[i];
+		eachMesh.MaterialIdx = pScene->mMeshes[i]->mMaterialIndex;
+		//Vertices:
+		eachMesh.VB.begin();
+		for (int j = 0; j < pScene->mMeshes[i]->mNumVertices; j++) {
 
+			eachMesh.VB.addNormal(
+				pScene->mMeshes[i]->mNormals[j].x, 
+				pScene->mMeshes[i]->mNormals[j].y, 
+				pScene->mMeshes[i]->mNormals[j].z
+			);
 
-			for (unsigned int k = 0; k < pScene->mMeshes[i]->mNumFaces; ++k) {
-
-					for (unsigned int l = 0; l < pScene->mMeshes[i]->mFaces[k].mNumIndices; ++l) {
-
-						unsigned int vertex_index = pScene->mMeshes[i]->mFaces[k].mIndices[l];
-						
-						if (pScene->mMeshes[i]->HasTextureCoords(i))
-							pMeshes[i].VB.addTexcoord0(
-								pScene->mMeshes[i]->mTextureCoords[0][vertex_index].x,
-								pScene->mMeshes[i]->mTextureCoords[0][vertex_index].y
-							);
-
-						if(pScene->mMeshes[i]->HasNormals())
-							pMeshes[i].VB.addNormal(
-								pScene->mMeshes[i]->mNormals[vertex_index].x*factor,
-								pScene->mMeshes[i]->mNormals[vertex_index].y*factor,
-								pScene->mMeshes[i]->mNormals[vertex_index].z*factor
-							);
-
-						pMeshes[i].MaterialIdx = pScene->mMeshes[i]->mMaterialIndex;
-
-						if(pScene->mMeshes[i]->HasVertexColors(i))
-							pMeshes[i].VB.addColor(
-								Color(
-									pScene->mMeshes[i]->mColors[vertex_index]->r,
-									pScene->mMeshes[i]->mColors[vertex_index]->g,
-									pScene->mMeshes[i]->mColors[vertex_index]->b
-								)
-							);
-
-						pMeshes[i].VB.addVertex(
-							pScene->mMeshes[i]->mVertices[vertex_index].x*factor,
-							pScene->mMeshes[i]->mVertices[vertex_index].y*factor,
-							pScene->mMeshes[i]->mVertices[vertex_index].z*factor
-
-						);
-						pMeshes[i].IB.addIndex(vertice_counter++);
-						
-					}
-				
+			if (pScene->mMeshes[i]->mTextureCoords[0]) {
+				eachMesh.VB.addTexcoord0(
+					pScene->mMeshes[i]->mTextureCoords[0][j].x,
+					pScene->mMeshes[i]->mTextureCoords[0][j].y
+				);
 			}
 
+			eachMesh.VB.addVertex(
+				pScene->mMeshes[i]->mVertices[j].x* factor,
+				pScene->mMeshes[i]->mVertices[j].y* factor,
+				pScene->mMeshes[i]->mVertices[j].z* factor
+			);
 
-			pMeshes[i].IB.end();
-			pMeshes[i].VB.end();
+		}
+		eachMesh.VB.end();
+
+		//Indices:
+		eachMesh.IB.begin();
+		for (int j = 0; j < pScene->mMeshes[i]->mNumFaces; j++) {
+			for (int k = 0; k < pScene->mMeshes[i]->mFaces[j].mNumIndices; k++) {
+				eachMesh.IB.addIndex(pScene->mMeshes[i]->mFaces[j].mIndices[k]);
+			}
+		}
+		eachMesh.IB.end();
 	}
-	
-	pMeshes->VB.end();
-	pMeshes->IB.end();
 
 }
 void Model::loadMaterials(const aiScene* pScene)

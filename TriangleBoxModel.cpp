@@ -11,67 +11,106 @@
 
 TriangleBoxModel::TriangleBoxModel(float Width, float Height, float Depth)
 {
+	Width = Width / 2;
+	Height = Height / 2;
+	Depth = Depth / 2;
 	VB.begin();
-	addVertexWithProps(0, 0, 0, 0, 1);				// a0 x O
-	addVertexWithProps(0, 0, 0, 1, 1);				// a1 x ~
-	addVertexWithProps(0, 0, 0, 0, 0);				// a2 x
+	Vector norm = Vector(0, 0, 0);
+	//Vorne X
+	norm = Vector(0,0,-1);
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, -Height, -Depth, 0, 1);				// a0 x O
+	VB.addNormal(norm);
+	addVertexWithProps(Width, -Height, -Depth, 1, 1);			// b1 x O
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, Height, -Depth, 0, 0);			// e2 x O
+	VB.addNormal(norm);
+	addVertexWithProps(Width, Height, -Depth, 1, 0);		// f3 x O
 
-	addVertexWithProps(Width, 0, 0, 1, 1);			// b3 x O
-	addVertexWithProps(Width, 0, 0, 0, 1);			// b4 x V
-	addVertexWithProps(Width, 0, 0, 1, 0);			// b5 x
 
-	addVertexWithProps(0, 0, Depth, 0, 1);			// c6 x ~
-	addVertexWithProps(0, 0, Depth, 1, 1);			// c7 x Ö
-	addVertexWithProps(0, 0, Depth, 0, 1);			// c8 x
+	//Rechts
+	norm = Vector(-1,0,0);
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, -Height, -Depth, 1, 1);				// a4 x ~
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, -Height, Depth, 0, 1);			// c5 x ~
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, Height, -Depth, 1, 0);			// e6 x ~
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, Height, Depth, 0, 0);		// g7 x ~
+	
+	//Links X
+	norm = Vector(1, 0, 0);
+	VB.addNormal(norm);
+	addVertexWithProps(Width, -Height, -Depth, 0, 1);			// b8 x V
+	VB.addNormal(norm);
+	addVertexWithProps(Width, -Height, Depth, 1, 1);		// d9 x V
+	VB.addNormal(norm);
+	addVertexWithProps(Width, Height, -Depth, 0, 0);		// f10 x V
+	VB.addNormal(norm);
+	addVertexWithProps(Width, Height, Depth, 1, 0);	// h11 x V
 
-	addVertexWithProps(Width, 0, Depth, 1, 1);		// d9 x V
-	addVertexWithProps(Width, 0, Depth, 0, 1);		// d10 x Ö
-	addVertexWithProps(Width, 0, Depth, 1, 1);		// d11 x
+	//Hinten X
+	norm = Vector(0,0,1);
+	VB.addNormal(norm);
+	addVertexWithProps(Width, -Height, Depth, 0, 1);		// d12 x Ö
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, -Height, Depth, 1, 1);			// c13 x Ö
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, Height, Depth, 1, 0);		// g14 x Ö
+	VB.addNormal(norm);
+	addVertexWithProps(Width, Height, Depth, 0, 0);	// h15 x Ö
 
-	addVertexWithProps(0, Height, 0, 0, 0);			// e12 x O
-	addVertexWithProps(0, Height, 0, 1, 0);			// e13 x ~
-	addVertexWithProps(0, Height, 0, 0, 1);			// e14 x ?
+	//Oben X
+	norm = Vector(0,1,0);
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, Height, -Depth, 1, 0);			// e16 x ?
+	VB.addNormal(norm);
+	addVertexWithProps(Width, Height, -Depth, 0,0);		// f17 x ?
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, Height, Depth, 1, 1);		// g18 x ?
+	VB.addNormal(norm);
+	addVertexWithProps(Width, Height, Depth, 0,1);	// h19 x ?
 
-	addVertexWithProps(Width, Height, 0, 1, 0);		// f15 x O
-	addVertexWithProps(Width, Height, 0, 0, 0);		// f16 x V
-	addVertexWithProps(Width, Height, 0, 1, 1);		// f17 x ?
-
-	addVertexWithProps(0, Height, Depth, 0, 0);		// g18 x ~
-	addVertexWithProps(0, Height, Depth, 1, 0);		// g19 x Ö
-	addVertexWithProps(0, Height, Depth, 0, 0);		// g20 x ?
-
-	addVertexWithProps(Width, Height, Depth, 1, 0);	// h21 x V
-	addVertexWithProps(Width, Height, Depth, 0, 0);	// h22 x Ö
-	addVertexWithProps(Width, Height, Depth, 1, 0);	// h23 x ?
+	//Unten
+	norm = Vector(0,-1,0);
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, -Height, -Depth, 1,1);				// a20 x
+	VB.addNormal(norm);
+	addVertexWithProps(Width, -Height, -Depth, 0,1);			// b21 x
+	VB.addNormal(norm);
+	addVertexWithProps(-Width, -Height, Depth, 1, 0);			// c22 x
+	VB.addNormal(norm);
+	addVertexWithProps(Width, -Height, Depth, 0, 0);		// d23 x
 	
 
 	VB.end();
 
 	IB.begin();
 	
-	//Vorderseite 0, 15, 3, 12
-	IBaddPolygon(0, 15, 3);
-	IBaddPolygon(0, 12, 15);
+	//Vorderseite
+	IBaddPolygon(0, 3, 1);
+	IBaddPolygon(0, 2, 3);
 
 	//Rechte Seite
-	IBaddPolygon(1, 6, 18);
-	IBaddPolygon(1, 18, 13);
+	IBaddPolygon(4, 5, 7);
+	IBaddPolygon(4, 07, 06);
 
 	//Linke Seite
-	IBaddPolygon(4, 21, 9);
-	IBaddPolygon(4, 16, 21);
+	IBaddPolygon(8, 11, 9);
+	IBaddPolygon(8, 10, 11);
 
 	//Rückseite
-	IBaddPolygon(10, 22, 19);
-	IBaddPolygon(10, 19, 7);
+	IBaddPolygon(12, 15, 14);
+	IBaddPolygon(12, 14, 13);
 
 	//Oben
-	IBaddPolygon(17, 14, 23);
-	IBaddPolygon(23, 14, 20);
+	IBaddPolygon(17, 16,19);
+	IBaddPolygon(18,19,16);
 
 	//Unten
-	IBaddPolygon(5, 11, 2);
-	IBaddPolygon(11, 8, 2);
+	IBaddPolygon(21,23,20);
+	IBaddPolygon(23,22,20);
 
 	IB.end();
 }
@@ -84,8 +123,6 @@ void TriangleBoxModel::IBaddPolygon(int a, int b, int c) {
 
 void TriangleBoxModel::addVertexWithProps(float x, float y, float z, float tx, float ty) {
 	VB.addTexcoord0(tx, ty);
-	Vector norm = Vector(x, y, z).normalize();
-	VB.addNormal(norm.X, norm.Y, norm.Z);					
 	VB.addVertex(x, y, z);				
 }
 

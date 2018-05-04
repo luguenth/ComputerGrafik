@@ -8,6 +8,7 @@
 
 #include "CGUtilities.h"
 #include "assert.h"
+#define _USE_MATH_DEFINES
 #include "math.h"
 #include <vector>
 #include <map>
@@ -21,25 +22,10 @@ public:
         assert("Unable to allocate enough memory for noise grid" && Grid);
         Size=size;
         
-        for(int i=0; i<size; i++)
-            for(int j=0; j<size; j++)
-                for(int k=0; k<size; k++)
+        for(unsigned int i=0; i<size; i++)
+            for(unsigned int j=0; j<size; j++)
+                for(unsigned int k=0; k<size; k++)
                     Cell(k,j,i) = (float)rand()/(float)RAND_MAX;
-        
-        for(int i=0; i<size; i++)
-        {
-            for(int j=0; j<size; j++)
-            {
-                for(int k=0; k<size; k++)
-                {
-                    printf( "%1.2f ",Cell(k,j,i));
-                }
-                
-                printf( "\n");
-            }
-            
-            printf( "\n");
-        }
 
     }
     
@@ -107,7 +93,7 @@ public:
         Vector P = Pos*2.0f + Vector( 2,0,0);
         float r = sqrt( P.X*P.X + P.Z * P.Z);
         
-        r -= sin( M_PI * r /3.0f /*/ 6*/);
+        r -= sin( (float)M_PI * r /3.0f /*/ 6*/);
         r += 0.1f * Noisegrid.value(P.X/6.0f, P.Z/6.0f, P.Y/6.0f);
         
         float d = fmod(r, 0.5f) / 0.5f;
@@ -281,8 +267,8 @@ void Scene::createInnerModel( std::vector<Triangle>& Triangles, float Radius, in
     for( t=0, j=1; j<height-1; j++ )
         for( i=0; i<width; i++ )
         {
-            theta = (float)j/(height-1) * M_PI;
-            phi   = (float)i/(width-1 ) * M_PI*2.0f;
+            theta = (float)j/(height-1) * (float)M_PI;
+            phi   = (float)i/(width-1 ) * (float)M_PI*2.0f;
             pVertices[t  ].X =  sin(theta) * cos(phi) * Radius;
             pVertices[t  ].Y =  cos(theta) * Radius;
             pVertices[t++].Z = -sin(theta) * sin(phi) * Radius;

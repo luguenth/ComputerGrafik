@@ -35,3 +35,10 @@
 
 .idea/
 cmake-build-debug/
+
+*.suo
+.vs/ComputerGrafik/v15/Browse.VC.db
+.vs/ProjectSettings.json
+.vs/VSWorkspaceState.json
+.vs/slnx.sqlite
+.vs/src/v15/Browse.VC.db

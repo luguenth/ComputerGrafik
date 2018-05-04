@@ -23,7 +23,7 @@ const char *CFragmentShaderCode =
 "out vec4 FragColor;"
 "void main()"
 "{"
-"    FragColor = vec4(Color,0);"
+"    FragColor = vec4(Color,1);"
 "}";
 
 ConstantShader::ConstantShader() : Col(1.0f,0.0f,0.0f)

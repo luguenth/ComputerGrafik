@@ -159,7 +159,10 @@ bool Texture::load( const char* Filename)
             *(++dataPtr) = c.rgbRed;
             *(++dataPtr) = c.rgbGreen;
             *(++dataPtr) = c.rgbBlue;
-            *(++dataPtr) = c.rgbReserved;
+            if(bpp==32)
+                *(++dataPtr) = c.rgbReserved;
+            else
+                *(++dataPtr) = 255;
         }
     
     FreeImage_Unload(pBitmap);

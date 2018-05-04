@@ -4,13 +4,11 @@
 #else
 #define GLFW_INCLUDE_GLCOREARB
 #define GLFW_INCLUDE_GLEXT
-
+#include <glfw/glfw3.h>
 #endif
-
-#include "glib-2.0/gobject/"
 #include <stdio.h>
-#include <FreeImage.h>
 #include "Application.h"
+#include "freeimage.h"
 
 void PrintOpenGLVersion();
 

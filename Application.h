@@ -17,6 +17,7 @@
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 #include "basemodel.h"
+#include "tank.h"
 
 class Application
 {
@@ -28,9 +29,13 @@ public:
     void draw();
     void end();
 protected:
+    Vector calc3DRay( float x, float y, Vector& Pos);
     Camera Cam;
     ModelList Models;
     GLFWwindow* pWindow;
+    Tank* pTank;
+    Model* pTankTop;
+    Model* pTankBot;
 
 };
 

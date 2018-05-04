@@ -49,14 +49,15 @@ const char *FragmentShaderCode =
 "}"
 "void main()"
 "{"
+"    vec4 DiffTex = texture( DiffuseTexture, Texcoord);"
+"    if(DiffTex.a <0.3f) discard;"
 "    vec3 N = normalize(Normal);"
 "    vec3 L = normalize(LightPos-Position);"
 "    vec3 E = normalize(EyePos-Position);"
 "    vec3 R = reflect(-L,N);"
-"    vec3 DiffTex = texture( DiffuseTexture, Texcoord).rgb;"
 "    vec3 DiffuseComponent = LightColor * DiffuseColor * sat(dot(N,L));"
 "    vec3 SpecularComponent = LightColor * SpecularColor * pow( sat(dot(R,E)), SpecularExp);"
-"    FragColor = vec4((DiffuseComponent + AmbientColor)*DiffTex + SpecularComponent ,0);"
+"    FragColor = vec4((DiffuseComponent + AmbientColor)*DiffTex.rgb + SpecularComponent ,DiffTex.a);"
 "}";
 
 PhongShader::PhongShader() :
@@ -64,7 +65,7 @@ PhongShader::PhongShader() :
  SpecularColor(0.5f,0.5f,0.5f),
  AmbientColor(0.2f,0.2f,0.2f),
  SpecularExp(20.0f),
- LightPos(5.0f,5.0f,5.0f),
+ LightPos(20.0f,20.0f,20.0f),
  LightColor(1,1,1),
  DiffuseTexture(Texture::defaultTex()),
  UpdateState(0xFFFFFFFF)

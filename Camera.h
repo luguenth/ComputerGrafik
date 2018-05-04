@@ -17,10 +17,9 @@
 #define GLFW_INCLUDE_GLCOREARB
 #define GLFW_INCLUDE_GLEXT
 #include <glfw/glfw3.h>
-
 #endif
-#include "Vector.h"
-#include "Matrix.h"
+#include "vector.h"
+#include "matrix.h"
 
 class BaseCamera
 {

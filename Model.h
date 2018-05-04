@@ -24,10 +24,10 @@ class Model : public BaseModel
 {
 public:
     Model();
-    Model(const char* ModelFile, bool FitSize=true);
+    Model(const char* ModelFile, bool FitSize);
     virtual ~Model();
 
-    bool load(const char* ModelFile, bool FitSize=true);
+    bool load(const char* ModelFile, bool FitSize);
     virtual void draw(const BaseCamera& Cam);
     const AABB& boundingBox() const { return BoundingBox; }
     
@@ -82,6 +82,9 @@ protected: // protected member variables
     std::string Filepath; // stores pathname and filename
     std::string Path; // stores path without filename
     Node RootNode;
+
+private:
+	void defineExtremes(float point, float &max, float &min);
     
 };
 

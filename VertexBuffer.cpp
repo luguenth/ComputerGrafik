@@ -11,7 +11,7 @@
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-VertexBuffer::VertexBuffer() : ActiveAttributes(0), WithinBeginBlock(false), VAO(0), VBO(0), VertexCount(0)
+VertexBuffer::VertexBuffer() : ActiveAttributes(0), WithinBeginBlock(false), VAO(0), VBO(0), VertexCount(0), BuffersInitialized(false)
 {
     
 }

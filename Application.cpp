@@ -10,6 +10,8 @@
 #ifdef WIN32
 #include <GL/glew.h>
 #include <glfw/glfw3.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 #else
 #define GLFW_INCLUDE_GLCOREARB
 #define GLFW_INCLUDE_GLEXT
@@ -21,7 +23,7 @@
 #include "lineboxmodel.h"
 #include "triangleboxmodel.h"
 #include "model.h"
-#include "scene.h"
+#include "terrainshader.h"
 
 
 #ifdef WIN32
@@ -34,44 +36,33 @@
 Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
 {
     BaseModel* pModel;
-    ConstantShader* pConstShader;
-    PhongShader* pPhongShader;
     
     // create LineGrid model with constant color shader
     pModel = new LinePlaneModel(10, 10, 10, 10);
-    pConstShader = new ConstantShader();
-	pConstShader->color( Color(1,1,1));
+    ConstantShader* pConstShader = new ConstantShader();
+	pConstShader->color( Color(1,0,0));
     pModel->shader(pConstShader, true);
+    // add to render list
     Models.push_back( pModel );
-	/*
+    
     // Exercise 1
-	pTankBot = new Model(ASSET_DIRECTORY "tank_bottom.dae", false);
-	pTankBot->shader(new PhongShader(), true);
-	Models.push_back(pTankBot);
+    // uncomment the following lines for testing
     
-	pTankTop = new Model(ASSET_DIRECTORY "tank_top.dae", false);
-	pTankTop->shader(new PhongShader(), true);
-	Models.push_back(pTankTop);
-   */
-
-    // Exercise 2
     
-    pPhongShader = new PhongShader();
-    pTank = new Tank();
-    pTank->shader(pPhongShader, true);
-    pTank->loadModels(ASSET_DIRECTORY "tank_bottom.dae", ASSET_DIRECTORY "tank_top.dae");
-    Models.push_back( pTank );
- 
+    pModel = new Model(ASSET_DIRECTORY "skybox.obj", false);
+    pModel->shader(new PhongShader(), true);
+    Models.push_back(pModel);
+   
+    pTerrain = new Terrain();
+    TerrainShader* pTerrainShader = new TerrainShader(ASSET_DIRECTORY);
+    pTerrainShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "grass.bmp"));
+    pTerrain->shader(pTerrainShader, true);
+    pTerrain->load(ASSET_DIRECTORY "heightmap2.png", ASSET_DIRECTORY"grass.bmp", ASSET_DIRECTORY"rock.bmp");
+    pTerrain->width(150);
+    pTerrain->depth(150);
+    pTerrain->height(15);
+    Models.push_back(pTerrain);
     
-    // Exercise 3
-    /*
-    Scene* pScene = new Scene();
-    pScene->shader(new PhongShader(), true);
-    pScene->addSceneFile(ASSET_DIRECTORY "scene.osh");
-    Models.push_back(pScene);
-    */
-    
-
     
 }
 void Application::start()
@@ -84,75 +75,12 @@ void Application::start()
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-
-void Application::update()
+void Application::update(float dtime)
 {
-	/*
     // Exercise 1
-	Matrix TM;
-	TM.translation(4,0,0);
-	Matrix RM_1;
-	Matrix RM_2;
-	Matrix RM_3;
-	RM_1.rotationY(-glfwGetTime());
-	RM_2.rotationY(-0.5f*3.14);
-	RM_3.rotationY(glfwGetTime());
-	
-	Matrix RTM_bot = RM_1 * TM * RM_2;
-	Matrix TRM = RTM_bot * RM_3;
-	pTankBot->transform(RTM_bot);
-	pTankTop->transform(TRM);
-	*/
-
-    // Exercise 2
-    // TODO: add your code here
-	float fb = 0, lr = 0;
-
-	if (glfwGetKey(pWindow, GLFW_KEY_UP) == GLFW_PRESS) fb = 1.0f;
-	if (glfwGetKey(pWindow, GLFW_KEY_DOWN) == GLFW_PRESS) fb = -1.0f;
-	if (glfwGetKey(pWindow, GLFW_KEY_LEFT) == GLFW_PRESS) lr = 1.0f;
-	if (glfwGetKey(pWindow, GLFW_KEY_RIGHT) == GLFW_PRESS) lr = -1.0f;
-
-	pTank->steer(fb, lr);
-	
-	double xpos, ypos;
-	glfwGetCursorPos(pWindow, &xpos, &ypos);
-	Vector temp = Vector();
-	
-	pTank->aim(
-		calc3DRay(xpos, ypos, temp)
-	);
-
-	pTank->update(glfwGetTime());
-
-	
+    // TODO: Add keyboard & mouse input queries for terrain scaling ..
+    
     Cam.update();
-}
-
-Vector Application::calc3DRay( float x, float y, Vector& Pos)
-{
-	int width, height;
-	glfwGetWindowSize(pWindow, &width, &height);
-	double xnorm = 2.0 / (width);
-	double ynorm = 2.0 / (height);
-	x = 1 - x * xnorm;
-	y = 1 - y * ynorm;
-
-	Matrix pMatrix = Cam.getProjectionMatrix();
-	Pos = Vector(x, y, 0);
-	Pos = pMatrix.invert() * Pos;
-
-	Matrix vMatrix = Cam.getViewMatrix();
-	vMatrix.transpose();
-	Pos = vMatrix * Pos;
-
-	float s = 0;
-	
-	Cam.position().triangleIntersection(Pos, Vector(1, 0, 0), Vector(0, 0, 0), Vector(0, 0, 1), s);
-
-	Pos = Cam.position() + Pos * s;
-
-    return Pos; // dummy return value
 }
 
 void Application::draw()

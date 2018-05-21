@@ -17,7 +17,7 @@
 #include "vertexbuffer.h"
 #include "indexbuffer.h"
 #include "basemodel.h"
-#include "tank.h"
+#include "terrain.h"
 
 class Application
 {
@@ -25,18 +25,15 @@ public:
     typedef std::list<BaseModel*> ModelList;
     Application(GLFWwindow* pWin);
     void start();
-    void update();
+    void update(float dtime);
     void draw();
     void end();
+
 protected:
-    Vector calc3DRay( float x, float y, Vector& Pos);
     Camera Cam;
     ModelList Models;
     GLFWwindow* pWindow;
-    Tank* pTank;
-    Model* pTankTop;
-    Model* pTankBot;
-
+    Terrain* pTerrain;
 };
 
 #endif /* Application_hpp */

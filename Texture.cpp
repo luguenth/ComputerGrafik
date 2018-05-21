@@ -86,6 +86,8 @@ Texture::Texture() : m_TextureID(0), m_pImage(NULL), CurrentTextureUnit(0)
     
 }
 
+
+
 Texture::Texture(unsigned int width, unsigned int height, unsigned char* data): m_TextureID(0), m_pImage(NULL), CurrentTextureUnit(0)
 {
     bool Result = create(width, height, data);
@@ -100,9 +102,25 @@ Texture::Texture(const char* Filename ): m_TextureID(0), m_pImage(NULL), Current
         throw std::exception();
 }
 
+Texture::Texture(const RGBImage& img) : m_TextureID(0), m_pImage(NULL), CurrentTextureUnit(0)
+{
+    bool Result = create(img);
+    if(!Result)
+        throw std::exception();
+}
 
 Texture::~Texture()
 {
+    release();
+}
+
+void Texture::release()
+{
+    if(isValid())
+    {
+        glDeleteTextures(1, &m_TextureID);
+        m_TextureID = -1;
+    }
     if(m_pImage)
         delete m_pImage;
     m_pImage = NULL;
@@ -115,6 +133,7 @@ bool Texture::isValid() const
 
 bool Texture::load( const char* Filename)
 {
+    release();
     FREE_IMAGE_FORMAT ImageFormat = FreeImage_GetFileType(Filename, 0);
     if(ImageFormat == FIF_UNKNOWN)
         ImageFormat = FreeImage_GetFIFFromFilename(Filename);
@@ -189,8 +208,7 @@ bool Texture::load( const char* Filename)
 
 bool Texture::create( unsigned int width, unsigned int height, unsigned char* data)
 {
-    if( m_pImage )
-        delete m_pImage;
+    release();
     
     m_pImage = createImage(data, width, height);
     
@@ -207,6 +225,35 @@ bool Texture::create( unsigned int width, unsigned int height, unsigned char* da
     
     return true;
 }
+
+bool Texture::create(const RGBImage& img)
+{
+    if( img.width()<= 0 || img.height() <=0)
+        return false;
+    
+    release();
+    
+    const unsigned int w = img.width();
+    const unsigned int h = img.height();
+    unsigned char* data = new unsigned char[w*h*4];
+    
+    unsigned int k=0;
+    for( unsigned int i=0; i<h; i++)
+        for (unsigned int j = 0; j<w; j++)
+        {
+            Color c = img.getPixelColor(j, i);
+            data[k++] = RGBImage::convertColorChannel(c.R);
+            data[k++] = RGBImage::convertColorChannel(c.G);
+            data[k++] = RGBImage::convertColorChannel(c.B);
+            data[k++] = RGBImage::convertColorChannel(1.0f);
+        }
+    
+    bool success = create(w, h, data);
+    delete [] data;
+    
+    return success;
+}
+
 
 RGBImage* Texture::createImage( unsigned char* Data, unsigned int width, unsigned int height )
 {

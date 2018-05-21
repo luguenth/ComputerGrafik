@@ -60,7 +60,7 @@ const char *FragmentShaderCode =
 "    FragColor = vec4((DiffuseComponent + AmbientColor)*DiffTex.rgb + SpecularComponent ,DiffTex.a);"
 "}";
 
-PhongShader::PhongShader() :
+PhongShader::PhongShader(bool LoadStaticShaderCode) :
  DiffuseColor(0.8f,0.8f,0.8f),
  SpecularColor(0.5f,0.5f,0.5f),
  AmbientColor(0.2f,0.2f,0.2f),
@@ -70,6 +70,8 @@ PhongShader::PhongShader() :
  DiffuseTexture(Texture::defaultTex()),
  UpdateState(0xFFFFFFFF)
 {
+    if(!LoadStaticShaderCode)
+        return;
     ShaderProgram = createShaderProgram(VertexShaderCode, FragmentShaderCode);
     assignLocations();
 }

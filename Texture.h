@@ -29,9 +29,11 @@ public:
     Texture();
     Texture(unsigned int width, unsigned int height, unsigned char* data);
     Texture(const char* Filename );
+    Texture(const RGBImage& img);
     ~Texture();
     bool load(const char* Filename);
     bool create(unsigned int width, unsigned int height, unsigned char* data);
+    bool create(const RGBImage& img);
     void activate(int slot=0) const;
     void deactivate() const;
     bool isValid() const;
@@ -41,6 +43,7 @@ public:
     static void ReleaseShared( const Texture* pTex );
     
 protected:
+    void release();
     unsigned char* LoadBMP( const char* Filename, unsigned int& width, unsigned int& height );
     RGBImage* createImage( unsigned char* Data, unsigned int width, unsigned int height );
     GLuint m_TextureID;

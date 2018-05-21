@@ -34,8 +34,9 @@ public:
     void activate();
     void deactivate();
     
-    GLenum indexFormat() { return IndexFormat; }
-    unsigned int indexCount() { return IndexCount; }
+    GLenum indexFormat() const { return IndexFormat; }
+    unsigned int indexCount() const { return IndexCount; }
+    const std::vector<unsigned int>& indices() const { return Indices; }
     
 private:
 

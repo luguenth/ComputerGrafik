@@ -47,12 +47,16 @@ int main () {
     PrintOpenGLVersion();
     
     {
+        double lastTime=0;
         Application App(window);
         App.start();
         while (!glfwWindowShouldClose (window)) {
+            double now = glfwGetTime();
+            double delta = now - lastTime;
+            lastTime = now;
             // once per frame
             glfwPollEvents();
-            App.update();
+            App.update((float)delta);
             App.draw();
             glfwSwapBuffers (window);
         }

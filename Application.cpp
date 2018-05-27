@@ -35,73 +35,104 @@
 
 Application::Application(GLFWwindow* pWin) : pWindow(pWin), Cam(pWin)
 {
-    BaseModel* pModel;
-    
-    // create LineGrid model with constant color shader
-    pModel = new LinePlaneModel(10, 10, 10, 10);
-    ConstantShader* pConstShader = new ConstantShader();
-	pConstShader->color( Color(1,0,0));
-    pModel->shader(pConstShader, true);
-    // add to render list
-    Models.push_back( pModel );
-    
-    // Exercise 1
-    // uncomment the following lines for testing
-    
-    
-    pModel = new Model(ASSET_DIRECTORY "skybox.obj", false);
-    pModel->shader(new PhongShader(), true);
-    Models.push_back(pModel);
-   
-    pTerrain = new Terrain();
-    TerrainShader* pTerrainShader = new TerrainShader(ASSET_DIRECTORY);
-    pTerrainShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "grass.bmp"));
-    pTerrain->shader(pTerrainShader, true);
-    pTerrain->load(ASSET_DIRECTORY "heightmap2.png", ASSET_DIRECTORY"grass.bmp", ASSET_DIRECTORY"rock.bmp");
-    pTerrain->width(150);
-    pTerrain->depth(150);
-    pTerrain->height(15);
-    Models.push_back(pTerrain);
-    
-    
+	BaseModel* pModel;
+
+	// create LineGrid model with constant color shader
+	pModel = new LinePlaneModel(10, 10, 10, 10);
+	ConstantShader* pConstShader = new ConstantShader();
+	pConstShader->color(Color(1, 0, 0));
+	pModel->shader(pConstShader, true);
+	// add to render list
+	Models.push_back(pModel);
+
+	// Exercise 1
+	// uncomment the following lines for testing
+
+
+	pModel = new Model(ASSET_DIRECTORY "skybox.obj", false);
+	pModel->shader(new PhongShader(), true);
+	Models.push_back(pModel);
+
+	pTerrain = new Terrain();
+	TerrainShader* pTerrainShader = new TerrainShader(ASSET_DIRECTORY);
+	pTerrainShader->diffuseTexture(Texture::LoadShared(ASSET_DIRECTORY "grass.bmp"));
+	pTerrain->shader(pTerrainShader, true);
+	pTerrain->load(ASSET_DIRECTORY "heightmap2.png", ASSET_DIRECTORY"grass.bmp", ASSET_DIRECTORY"rock.bmp");
+	pTerrain->width(150);
+	pTerrain->depth(150);
+	pTerrain->height(15);
+	Models.push_back(pTerrain);
+
+
 }
 void Application::start()
 {
-    glEnable (GL_DEPTH_TEST); // enable depth-testing
-    glDepthFunc (GL_LESS); // depth-testing interprets a smaller value as "closer"
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glEnable(GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_DEPTH_TEST); // enable depth-testing
+	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Application::update(float dtime)
 {
-    // Exercise 1
-    // TODO: Add keyboard & mouse input queries for terrain scaling ..
-    
-    Cam.update();
+	// Exercise 1
+	// TODO: Add keyboard & mouse input queries for terrain scaling ..
+
+	static double lastMouseX = 0;
+	static double lastMouseY = 0;
+	if (glfwGetKey(this->pWindow, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		double xpos, ypos;
+		float newx, newy;
+		glfwGetCursorPos(pWindow, &xpos, &ypos);
+		Vector new_size = pTerrain->size();
+
+		if (lastMouseX == 0) {
+			newx = 0;
+		}
+		else {
+			newx = (float)((lastMouseX - xpos) * new_size.X* 0.005);
+		}
+
+		if (lastMouseY == 0) {
+			newy = 0;
+		}
+		else {
+			newy = (float)((lastMouseY - ypos) * new_size.Y* 0.005);
+		}
+
+		pTerrain->size(new_size + Vector(newx, newy, newx));
+		lastMouseX = xpos;
+		lastMouseY = ypos;
+	}
+	else {
+		lastMouseX = 0;
+		lastMouseY = 0;
+	}
+	Cam.update();
 }
 
 void Application::draw()
 {
-    // 1. clear screen
-    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// 1. clear screen
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // 2. setup shaders and draw models
-    for( ModelList::iterator it = Models.begin(); it != Models.end(); ++it )
-    {
-        (*it)->draw(Cam);
-    }
-    
-    // 3. check once per frame for opengl errors
-    GLenum Error = glGetError();
-    assert(Error==0);
+	// 2. setup shaders and draw models
+	for (ModelList::iterator it = Models.begin(); it != Models.end(); ++it)
+	{
+		(*it)->draw(Cam);
+	}
+
+	// 3. check once per frame for opengl errors
+	GLenum Error = glGetError();
+	assert(Error == 0);
 }
 void Application::end()
 {
-    for( ModelList::iterator it = Models.begin(); it != Models.end(); ++it )
-        delete *it;
-    
-    Models.clear();
+	for (ModelList::iterator it = Models.begin(); it != Models.end(); ++it)
+		delete *it;
+
+	Models.clear();
 }

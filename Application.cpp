@@ -91,15 +91,13 @@ void Application::update(float dtime)
 
 		if (lastMouseX == 0) {
 			newx = 0;
-		}
-		else {
+		}else {
 			newx = (float)((lastMouseX - xpos) * new_size.X* 0.005);
 		}
 
 		if (lastMouseY == 0) {
 			newy = 0;
-		}
-		else {
+		}else {
 			newy = (float)((lastMouseY - ypos) * new_size.Y* 0.005);
 		}
 

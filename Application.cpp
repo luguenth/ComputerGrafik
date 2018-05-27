@@ -92,7 +92,7 @@ void Application::update(float dtime)
 		if (lastMouseX == 0) {
 			newx = 0;
 		}else {
-			newx = (float)((lastMouseX - xpos) * new_size.X* 0.005);
+			newx = (float)((lastMouseX - xpos) * new_size.X* -0.005);
 		}
 
 		if (lastMouseY == 0) {
